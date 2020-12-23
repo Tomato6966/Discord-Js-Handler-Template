@@ -43,7 +43,7 @@ function getCMD(client,message,input){
     }
     info = "";
     if(cmd.name) info += `**Command name**: \`${cmd.name}\`\n`
-    if(cmd.aliases) info += `**Aliases**: ${cmd.aliases.map(a => `\`${a}\``).join(", ")}\n`
+    if(cmd.aliases) info += `**Aliases**: \`${cmd.aliases.map(a => `${a}`).join("\`, \`")}\`\n`
     if(cmd.description) info += `**Description**: \`${cmd.description}\`\n`
     if(cmd.usage) {
         info += `\n**Usage**: ${cmd.usage}`;
