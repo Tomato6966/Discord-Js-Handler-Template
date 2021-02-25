@@ -1,4 +1,4 @@
-# Discord-Js-Handler-Tempalte
+# Discord-Js-Handler-Template
 
 For Questions: https://discord.gg/fS6qBSm
 
