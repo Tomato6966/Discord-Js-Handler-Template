@@ -30,12 +30,16 @@ module.exports = async (client, message) => {
     //creating the cmd argument by shifting the args by 1
     const cmd = args.shift().toLowerCase();
     //if no cmd added return error
-    if (cmd.length === 0) return message.channel.send(new Discord.MessageEmbed()
-      .setColor(ee.wrongcolor)
-      .setFooter(ee.footertext, ee.footericon)
-      .setTitle(`❌ Unkown command, try: **\`${prefix}help\`**`)
-      .setDescription(`To play Music simply type \`${prefix}play <Title / Url>\`\n\nTo create a unique Requesting Setup type \`${prefix}setup\``)
-    )
+     if (cmd.length === 0){
+      if(matchedPrefix.includes(client.user.id))
+        return message.channel.send(new Discord.MessageEmbed()
+          .setColor(ee.color)
+          .setFooter(ee.footertext,ee.footericon)
+          .setTitle(`Hugh? I got pinged? Imma give you some help`)
+          .setDescription(`To see all Commands type: \`${prefix}help\``)
+        );
+      return;
+      }
     //get the command from the collection
     let command = client.commands.get(cmd);
     //if the command does not exist, try to get it by his alias
