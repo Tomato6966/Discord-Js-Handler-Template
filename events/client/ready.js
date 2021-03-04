@@ -18,7 +18,7 @@ module.exports = client => {
       console.log(String(e.stack).red);
   }
   //Change status each 10 minutes
-  setTimeout(()=>{
+  setInterval(()=>{
     try{
       client.user.setActivity(client.user.username, { type: "PLAYING" });
     }catch (e) {
