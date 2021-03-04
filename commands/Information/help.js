@@ -30,7 +30,7 @@ module.exports = {
               embed.addField("**Useage**", `\`${config.prefix}${cmd.useage}\``);
               embed.setFooter("Syntax: <> = required, [] = optional");
           }
-          return message.channel.send(embed.setColor(ee.main));
+          return message.channel.send(embed.setColor(ee.color));
         } else {
           const embed = new MessageEmbed()
               .setColor(ee.color)
