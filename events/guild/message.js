@@ -1,11 +1,17 @@
 /**
-  * @INFO
-  * Loading all needed File Information Parameters
-*/
-const config = require("../../botconfig/config.json"); //loading config file with token and prefix, and settings
+ * @INFO
+ * Loading all needed File Information Parameters
+ */
+const config = require("../../botconfig/config.json"); //loading config file with token and prefix
+const settings = require("../../botconfig/settings.json"); //loading settings file with the settings
 const ee = require("../../botconfig/embed.json"); //Loading all embed settings like color footertext and icon ...
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
-const { escapeRegex} = require("../../handlers/functions"); //Loading all needed functions
+//rpelace
+const {
+  escapeRegex,
+  onCoolDown,
+  replacemsg
+} = require("../../handlers/functions"); //Loading all needed functions
 //here the event starts
 module.exports = async (client, message) => {
   try {
@@ -26,103 +32,183 @@ module.exports = async (client, message) => {
     //now define the right prefix either ping or not ping
     const [, matchedPrefix] = message.content.match(prefixRegex);
     //create the arguments with sliceing of of the rightprefix length
-    const args = message.content.slice(matchedPrefix.length).trim().split(/ +/);
+    const args = message.content.slice(matchedPrefix.length).trim().split(/ +/).filter(Boolean);
     //creating the cmd argument by shifting the args by 1
     const cmd = args.shift().toLowerCase();
     //if no cmd added return error
-     if (cmd.length === 0){
-      if(matchedPrefix.includes(client.user.id))
-        return message.channel.send(new Discord.MessageEmbed()
-          .setColor(ee.color)
-          .setFooter(ee.footertext,ee.footericon)
-          .setTitle(`Hugh? I got pinged? Imma give you some help`)
-          .setDescription(`To see all Commands type: \`${prefix}help\``)
-        );
+    if (cmd.length === 0) {
+      if (matchedPrefix.includes(client.user.id) && settings.ping_message)
+        return message.channel.send({embed: new Discord.MessageEmbed()
+            .setColor(ee.color).setFooter(ee.footertext, ee.footericon)
+            .setTitle(replacemsg(settings.messages.ping_message, {
+              prefix: prefix
+            }))
+        });
       return;
-      }
+    }
     //get the command from the collection
     let command = client.commands.get(cmd);
     //if the command does not exist, try to get it by his alias
     if (!command) command = client.commands.get(client.aliases.get(cmd));
     //if the command is now valid
-    if (command){
-        if (!client.cooldowns.has(command.name)) { //if its not in the cooldown, set it too there
-            client.cooldowns.set(command.name, new Discord.Collection());
+    if (command) {
+      //Check if user is on cooldown with the cmd, with Tomato#6966's Function from /handlers/functions.js
+      if (onCoolDown(message, command)) {
+        return message.channel.send({
+          embed: new Discord.MessageEmbed()
+            .setColor(ee.wrongcolor)
+            .setFooter(ee.footertext, ee.footericon)
+            .setTitle(replacemsg(settings.messages.cooldown, {
+              prefix: prefix,
+              command: command,
+              timeLeft: onCoolDown(message, command)
+            }))
+        });
+      }
+      try {
+        //try to delete the message of the user who ran the cmd, if the setting is enabled
+        if (settings.delete_commands) {
+          try {
+            message.delete()
+          } catch {}
         }
-        const now = Date.now(); //get the current time
-        const timestamps = client.cooldowns.get(command.name); //get the timestamp of the last used commands
-        const cooldownAmount = (command.cooldown || 1.5) * 1000; //get the cooldownamount of the command, if there is no cooldown there will be automatically 1 sec cooldown, so you cannot spam it^^
-        if (timestamps.has(message.author.id)) { //if the user is on cooldown
-          const expirationTime = timestamps.get(message.author.id) + cooldownAmount; //get the amount of time he needs to wait until he can run the cmd again
-          if (now < expirationTime) { //if he is still on cooldonw
-            const timeLeft = (expirationTime - now) / 1000; //get the lefttime
-            return message.channel.send(new Discord.MessageEmbed()
-              .setColor(ee.wrongcolor)
-              .setFooter(ee.footertext,ee.footericon)
-              .setTitle(`❌ Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`)
-            ); //send an information message
-          }
-        }
-        timestamps.set(message.author.id, now); //if he is not on cooldown, set it to the cooldown
-        setTimeout(() => timestamps.delete(message.author.id), cooldownAmount); //set a timeout function with the cooldown, so it gets deleted later on again
-      try{
-        //try to delete the message of the user who ran the cmd
-        try{  message.delete();   }catch{}
         //if Command has specific permission return error
-        if(command.memberpermissions && !message.member.hasPermission(command.memberpermissions)) {
+        if (command.memberpermissions && command.memberpermissions.length > 0 && !message.member.hasPermission(command.memberpermissions)) {
+          return message.channel.send({ embed: new Discord.MessageEmbed()
+              .setColor(ee.wrongcolor)
+              .setFooter(ee.footertext, ee.footericon)
+              .setTitle(replacemsg(settings.messages.notallowed_to_exec_cmd.title))
+              .setDescription(replacemsg(settings.messages.notallowed_to_exec_cmd.description.memberpermissions, {
+                command: command,
+                prefix: prefix
+              }))
+          }).then(msg => msg.delete({
+            timeout: settings.timeout.notallowed_to_exec_cmd.memberpermissions
+          }).catch((e) => {}));
+        }
+        //if Command has specific needed roles return error
+        if (command.requiredroles && command.requiredroles.length > 0 && message.member.roles.cache.size > 0 && !message.member.roles.cache.some(r => command.requiredroles.includes(r.id))) {
           return message.channel.send(new Discord.MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
-            .setTitle("❌ Error | You are not allowed to run this command!")
-            .setDescription(`You need these Permissions: \`${command.memberpermissions.join("`, ``")}\``)
-          ).then(msg=>msg.delete({timeout: 5000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray)));
+            .setTitle(replacemsg(settings.messages.notallowed_to_exec_cmd.title))
+            .setDescription(replacemsg(settings.messages.notallowed_to_exec_cmd.description.requiredroles, {
+              command: command,
+              prefix: prefix
+            }))
+          ).then(msg => msg.delete({
+            timeout: settings.timeout.notallowed_to_exec_cmd.requiredroles
+          }).catch((e) => {}));
         }
-        //if the Bot has not enough permissions return error
-        let required_perms = ["ADD_REACTIONS","PRIORITY_SPEAKER","VIEW_CHANNEL","SEND_MESSAGES",
-        "EMBED_LINKS","CONNECT","SPEAK","DEAFEN_MEMBERS"]
-        if(!message.guild.me.hasPermission(required_perms)){
-          try{ message.react("❌"); }catch{}
-          return message.channel.send(new Discord.MessageEmbed()
+        //if Command has specific users return error
+        if (command.alloweduserids && command.alloweduserids.length > 0 && !command.alloweduserids.includes(message.author.id)) {
+          return message.channel.send({embed: new Discord.MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
-            .setTitle("❌ Error | I don't have enough Permissions!")
-            .setDescription("Please give me just `ADMINISTRATOR`, because I need it to delete Messages, Create Channel and execute all Admin Commands.\n If you don't want to give me them, then those are the exact Permissions which I need: \n> `" + required_perms.join("`, `") +"`")
-          )
+            .setTitle(replacemsg(settings.messages.notallowed_to_exec_cmd.title))
+            .setDescription(replacemsg(settings.messages.notallowed_to_exec_cmd.description.alloweduserids, {
+              command: command,
+              prefix: prefix
+            }))
+          }).then(msg => msg.delete({
+            timeout: settings.timeout.notallowed_to_exec_cmd.alloweduserids
+          }).catch((e) => {}));
         }
-        //run the command with the parameters:  client, message, args, user, text, prefix,
-        command.run(client, message, args, message.member, args.join(" "), prefix);
-      }catch (e) {
-        console.log(String(e.stack).red)
-        return message.channel.send(new Discord.MessageEmbed()
+        //if command has minimum args, and user dont entered enough, return error
+        if(command.minargs && command.minargs > 0 && args.length < command.minargs) {
+          return message.channel.send({embed: new Discord.MessageEmbed()
+            .setColor(ee.wrongcolor)
+            .setFooter(ee.footertext, ee.footericon)
+            .setTitle(":x: Wrong Command Usage!")
+            .setDescription(command.argsmissing_message && command.argsmissing_message.trim().length > 0 ? command.argsmissing_message : command.usage ? "Usage: " + command.usage : "Wrong Command Usage")
+          }).then(msg => msg.delete({
+            timeout: settings.timeout.minargs
+          }).catch((e) => {}));
+        }
+        //if command has maximum args, and user enters too many, return error
+        if(command.maxargs && command.maxargs > 0 && args.length > command.maxargs) {
+          return message.channel.send({embed: new Discord.MessageEmbed()
+            .setColor(ee.wrongcolor)
+            .setFooter(ee.footertext, ee.footericon)
+            .setTitle(":x: Wrong Command Usage!")
+            .setDescription(command.argstoomany_message && command.argstoomany_message.trim().length > 0 ? command.argstoomany_message : command.usage ? "Usage: " + command.usage : "Wrong Command Usage")
+          }).then(msg => msg.delete({
+            timeout: settings.timeout.maxargs
+          }).catch((e) => {}));
+        }
+        
+        //if command has minimum args (splitted with "++"), and user dont entered enough, return error
+        if(command.minplusargs && command.minplusargs > 0 && args.join(" ").split("++").filter(Boolean).length < command.minplusargs) {
+          return message.channel.send({embed: new Discord.MessageEmbed()
+            .setColor(ee.wrongcolor)
+            .setFooter(ee.footertext, ee.footericon)
+            .setTitle(":x: Wrong Command Usage!")
+            .setDescription(command.argsmissing_message && command.argsmissing_message.trim().length > 0 ? command.argsmissing_message : command.usage ? "Usage: " + command.usage : "Wrong Command Usage")
+          }).then(msg => msg.delete({
+            timeout: settings.timeout.minplusargs
+          }).catch((e) => {}));
+        }
+        //if command has maximum args (splitted with "++"), and user enters too many, return error
+        if(command.maxplusargs && command.maxplusargs > 0 && args.join(" ").split("++").filter(Boolean).length > command.maxplusargs) {
+          return message.channel.send({embed: new Discord.MessageEmbed()
+            .setColor(ee.wrongcolor)
+            .setFooter(ee.footertext, ee.footericon)
+            .setTitle(":x: Wrong Command Usage!")
+            .setDescription(command.argstoomany_message && command.argstoomany_message.trim().length > 0 ? command.argsmissing_message : command.usage ? "Usage: " + command.usage : "Wrong Command Usage")
+          }).then(msg => msg.delete({
+            timeout: settings.timeout.maxplusargs
+          }).catch((e) => {}));
+        }
+        //run the command with the parameters:  client, message, args, Cmduser, text, prefix,
+        command.run(client, message, args, args.join(" ").split("++").filter(Boolean), message.member, args.join(" "), prefix);
+      } catch (error) {
+        if (settings.somethingwentwrong_cmd) {
+          return message.channel.send({
+            embed: new Discord.MessageEmbed()
+              .setColor(ee.wrongcolor)
+              .setFooter(ee.footertext, ee.footericon)
+              .setTitle(replacemsg(settings.messages.somethingwentwrong_cmd.title, {
+                prefix: prefix,
+                command: command
+              }))
+              .setDescription(replacemsg(settings.messages.somethingwentwrong_cmd.description, {
+                error: error,
+                prefix: prefix,
+                command: command
+              }))
+          }).then(msg => msg.delete({
+            timeout: 5000
+          }).catch((e) => {}));
+        }
+      }
+    } else //if the command is not found send an info msg
+      return message.channel.send({
+        embed: new Discord.MessageEmbed()
           .setColor(ee.wrongcolor)
           .setFooter(ee.footertext, ee.footericon)
-          .setTitle("❌ Something went wrong while, running the: `" + command.name + "` command")
-          .setDescription(`\`\`\`${e.message}\`\`\``)
-        ).then(msg=>msg.delete({timeout: 5000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray)));
-      }
-    }
-    else //if the command is not found send an info msg
-    return message.channel.send(new Discord.MessageEmbed()
-      .setColor(ee.wrongcolor)
-      .setFooter(ee.footertext, ee.footericon)
-      .setTitle(`❌ Unkown command, try: **\`${prefix}help\`**`)
-      .setDescription(`To play Music simply type \`${prefix}play <Title / Url>\``)
-    ).then(msg=>msg.delete({timeout: 5000}).catch(e=>console.log("Couldn't Delete --> Ignore".gray)));
-  }catch (e){
-    return message.channel.send(
-    new MessageEmbed()
-    .setColor("RED")
-    .setTitle(`❌ ERROR | An error occurred`)
-    .setDescription(`\`\`\`${e.stack}\`\`\``)
-);
+          .setTitle(replacemsg(settings.messages.unknown_cmd, {
+            prefix: prefix
+          }))
+      }).then(msg => msg.delete({
+        timeout: 5000
+      }).catch((e) => {}));
+  } catch (e) {
+    return message.channel.send({
+      embed: new Discord.MessageEmbed()
+        .setColor(ee.wrongcolor)
+        .setTitle(replacemsg(settings.error_occur))
+        .setDescription(replacemsg(settings.error_occur_desc, {
+          error: error
+        }))
+    });
   }
   /**
-    * @INFO
-    * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/Discord-Js-Handler-Template
-    * @INFO
-    * Work for Milrato Development | https://milrato.eu
-    * @INFO
-    * Please mention Him / Milrato Development, when using this Code!
-    * @INFO
-  */
+   * @INFO
+   * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/Discord-Js-Handler-Template
+   * @INFO
+   * Work for Milrato Development | https://milrato.eu
+   * @INFO
+   * Please mention Him / Milrato Development, when using this Code!
+   * @INFO
+   */
 }

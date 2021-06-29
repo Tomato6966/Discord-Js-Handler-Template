@@ -1,5 +1,6 @@
 //here the event starts
 const config = require("../../botconfig/config.json")
+const {change_status} = require("../../handlers/functions")
 module.exports = client => {
   try{
     const stringlength = 69;
@@ -13,16 +14,16 @@ module.exports = client => {
   }catch{ /* */ }
 
   try{
-    client.user.setActivity(client.user.username, { type: "PLAYING" });
+    change_status(client)
   }catch (e) {
-      console.log(String(e.stack).red);
+    console.log(String(e.stack).red);
   }
   //Change status each 10 minutes
   setInterval(()=>{
     try{
-      client.user.setActivity(client.user.username, { type: "PLAYING" });
+      change_status(client)
     }catch (e) {
-        console.log(String(e.stack).red);
+      console.log(String(e.stack).red);
     }
   }, 10*60*1000)
 }

@@ -27,10 +27,17 @@ client.aliases = new Discord.Collection(); //an collection for all your command-
 client.categories = fs.readdirSync("./commands/"); //categories
 client.cooldowns = new Discord.Collection(); //an collection for cooldown commands of each user
 
+//defining all files 2 be loaded in ./handlers
+client.handlers = ["command", "events"];
 //Loading files, with the client variable like Command Handler, Event Handler, ...
-["command", "events"].forEach(handler => {
-    require(`./handlers/${handler}`)(client);
-});
+function handlers(){
+  client.handlers.forEach(handler => {
+      require(`./handlers/${handler}`)(client);
+  });
+}; handlers();
+module.exports.handlers = handlers;
+//the system for loading the cmds is needed for reloadbot
+
 //login into the bot
 client.login(require("./botconfig/config.json").token);
 /**

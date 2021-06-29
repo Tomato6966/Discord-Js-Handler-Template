@@ -1,9 +1,11 @@
 const {
   MessageEmbed,
+  Collection
 } = require("discord.js");
 const config = require("../botconfig/config.json");
 const ee = require("../botconfig/embed.json");
-
+const settings = require("../botconfig/settings.json");
+//EXPORT ALL FUNCTIONS
 module.exports.nFormatter = nFormatter;
 module.exports.change_status = change_status;
 module.exports.shuffle = shuffle;
@@ -22,7 +24,91 @@ module.exports.GetUser = GetUser;
 module.exports.GetRole = GetRole;
 module.exports.GetGlobalUser = GetGlobalUser;
 module.exports.parseMilliseconds = parseMilliseconds;
+module.exports.onCoolDown = onCoolDown;
 
+module.exports.replacemsg = replacedefaultmessages
+/**
+ * 
+ * @param {*} text The Text that should be replaced, usually from /botconfig/settings.json
+ * @param {*} options Those Options are what are needed for the replaceMent! Valid ones are: { 
+ *   timeLeft: "",
+ *   commandmemberpermissions: { memberpermissions: [] }, 
+ *   commandalloweduserids: { alloweduserids: [] }, 
+ *   commandrequiredroles: { requiredroles: [] }, 
+ *   commandname: { name: "" }, 
+ *   commandaliases: { aliases: [] }, 
+ *   prefix: "",
+ *   errormessage: { message: "" }
+ *   errorstack: { stack: STACK }
+ *   error: ERRORTYPE
+ * }
+ * @returns STRING
+ */
+function replacedefaultmessages(text, o = {}){
+    if(!text || text == undefined || text == null) throw "No Text for the replacedefault message added as First Parameter";
+    const options = Object(o)
+    if(!options || options == undefined || options == null) return String(text)
+    return String(text)
+      .replace(/%{timeleft}%/gi, options && options.timeLeft ? options.timeLeft.toFixed(1) : "%{timeleft}%")
+      .replace(/%{commandname}%/gi, options && options.command && options.command.name ? options.command.name : "%{commandname}%")
+      .replace(/%{commandaliases}%/gi, options && options.command && options.command.aliases ? options.command.aliases.map(v => `\`${v}\``).join(",") : "%{commandaliases}%")
+      .replace(/%{prefix}%/gi, options && options.prefix ? options.prefix : "%{prefix}%")
+      .replace(/%{commandmemberpermissions}%/gi, options && options.command && options.command.memberpermissions ? options.command.memberpermissions.map(v => `\`${v}\``).join(",") : "%{commandmemberpermissions}%")
+      .replace(/%{commandalloweduserids}%/gi, options && options.command &&options.command.alloweduserids ? options.command.alloweduserids.map(v => `<@${v}>`).join(",") : "%{commandalloweduserids}%")
+      .replace(/%{commandrequiredroles}%/gi, options && options.command &&options.command.requiredroles ? options.command.requiredroles.map(v => `<@&${v}>`).join(",") : "%{commandrequiredroles}%")
+      .replace(/%{errormessage}%/gi, options && options.error && options.error.message ? options.error.message : options && options.error ? options.error : "%{errormessage}%")
+      .replace(/%{errorstack}%/gi, options && options.error && options.error.stack ? options.error.stack : options && options.error && options.error.message ? options.error.message : options && options.error ? options.error : "%{errorstack}%")
+      .replace(/%{error}%/gi, options && options.error ? options.error : "%{error}%")
+
+}
+
+/**
+ * 
+ * @param {*} message A DiscordMessage, with the client, information
+ * @param {*} command The Command with the command.name
+ * @returns BOOLEAN
+ */
+function onCoolDown(message, command) {
+  if(!message || !message.client) throw "No Message with a valid DiscordClient granted as First Parameter";
+  if(!command || !command.name) throw "No Command with a valid Name granted as Second Parameter";
+  const client = message.client;
+  if (!client.cooldowns.has(command.name)) { //if its not in the cooldown, set it too there
+    client.cooldowns.set(command.name, new Collection());
+  }
+  const now = Date.now(); //get the current time
+  const timestamps = client.cooldowns.get(command.name); //get the timestamp of the last used commands
+  const cooldownAmount = (command.cooldown || settings.default_cooldown_in_sec) * 1000; //get the cooldownamount of the command, if there is no cooldown there will be automatically 1 sec cooldown, so you cannot spam it^^
+  if (timestamps.has(message.author.id)) { //if the user is on cooldown
+    const expirationTime = timestamps.get(message.author.id) + cooldownAmount; //get the amount of time he needs to wait until he can run the cmd again
+    if (now < expirationTime) { //if he is still on cooldonw
+      const timeLeft = (expirationTime - now) / 1000; //get the lefttime
+      //return true
+      return timeLeft
+    }
+    else {
+      //if he is not on cooldown, set it to the cooldown
+      timestamps.set(message.author.id, now); 
+      //set a timeout function with the cooldown, so it gets deleted later on again
+      setTimeout(() => timestamps.delete(message.author.id), cooldownAmount); 
+      //return false aka not on cooldown
+      return false;
+    }
+  }
+  else {
+    //if he is not on cooldown, set it to the cooldown
+    timestamps.set(message.author.id, now); 
+    //set a timeout function with the cooldown, so it gets deleted later on again
+    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount); 
+    //return false aka not on cooldown
+    return false;
+  }
+}
+
+/**
+ * 
+ * @param {*} milliseconds NUMBER | TIME IN MILLISECONDS
+ * @returns Object of Formatted Time in Days to nanoseconds
+ */
 function parseMilliseconds(milliseconds) {
 	if (typeof milliseconds !== 'number') {
 		throw new TypeError('Expected a number');
@@ -39,6 +125,11 @@ function parseMilliseconds(milliseconds) {
 	};
 }
 
+/**
+ * 
+ * @param {*} string A WHOLE TEXT, checks if there is a URL IN IT
+ * @returns BOOLEAN/THE URL
+ */
 function isValidURL(string) {
   const args = string.split(" ");
   let url;
@@ -54,6 +145,12 @@ function isValidURL(string) {
   return url;
 };
 
+/**
+ * 
+ * @param {*} message a DISCORDMESSAGE with the Content and guild and client information
+ * @param {*} arg //a argument, for search for example
+ * @returns BOOLEAN/DISCORDUSER
+ */
 function GetUser(message, arg){
   var errormessage = ":x: I failed finding that User...";
   return new Promise(async (resolve, reject) => {
@@ -87,33 +184,46 @@ function GetUser(message, arg){
   })
 }
 
+/**
+ * 
+ * @param {*} message a DISCORDMESSAGE with the Content and guild and client information
+ * @param {*} arg //a argument, for search for example
+ * @returns BOOLEAN/GUILDROLE
+ */
 function GetRole(message, arg){
   var errormessage = ":x: I failed finding that Role...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
     if(!client || !message) return reject("CLIENT IS NOT DEFINED")
     if(!args || args == null || args == undefined) args = message.content.trim().split(/ +/).slice(1);
-    let user = message.mentions.rolee.filter(role=>role.guild.id==message.guild.id).first();
+    let user = message.mentions.roles.filter(role=>role.guild.id==message.guild.id).first();
     if(!user && args[0] && args[0].length == 18) {
-      user = message.guild.rolee.cache.get(args[0])
+      user = message.guild.roles.cache.get(args[0])
       if(!user) return reject(errormessage)
       return resolve(user);
     }
     else if(!user && args[0]){
-      let alluser = message.guild.rolee.cache.map(role => String(role.name).toLowerCase())
+      let alluser = message.guild.roles.cache.map(role => String(role.name).toLowerCase())
       user = alluser.find(r => r.split(" ").join("").includes(args.join("").toLowerCase()))
-      user = message.guild.rolee.cache.find(role => String(role.name).toLowerCase() === user)
+      user = message.guild.roles.cache.find(role => String(role.name).toLowerCase() === user)
       if(!user) return reject(errormessage)
       return resolve(user);
     }
     else {
-      user = message.mentions.rolee.filter(role=>role.guild.id==message.guild.id).first();
+      user = message.mentions.roles.filter(role=>role.guild.id==message.guild.id).first();
       if(!user) return reject(errormessage)
       return resolve(user);
     }
   })
 }
 
+
+/**
+ * 
+ * @param {*} message a DISCORDMESSAGE with the Content and guild and client information
+ * @param {*} arg //a argument, for search for example
+ * @returns BOOLEAN/DISCORDUSER
+ */
 function GetGlobalUser(message, arg){
   var errormessage = ":x: I failed finding that User...";
   return new Promise(async (resolve, reject) => {
@@ -151,30 +261,45 @@ function GetGlobalUser(message, arg){
   })
 }
 
-
-function shuffle(a) {
+/**
+ * 
+ * @param {*} array Shuffles a given array (mix) 
+ * @returns ARRAY
+ */
+function shuffle(array) {
   try {
     var j, x, i;
-    for (i = a.length - 1; i > 0; i--) {
+    for (i = array.length - 1; i > 0; i--) {
       j = Math.floor(Math.random() * (i + 1));
-      x = a[i];
-      a[i] = a[j];
-      a[j] = x;
+      x = array[i];
+      array[i] = array[j];
+      array[j] = x;
     }
-    return a;
+    return array;
   } catch (e) {
     console.log(String(e.stack).bgRed)
   }
 }
 
+/**
+ * 
+ * @param {*} date Date format (Date.now())
+ * @returns Formatted Date
+ */
 function formatDate(date) {
   try {
     return new Intl.DateTimeFormat("en-US").format(date);
   } catch (e) {
     console.log(String(e.stack).bgRed)
+    return false;
   }
 }
 
+/**
+ * 
+ * @param {*} duration Number | Time in Milliseconds
+ * @returns Object of Formatted Time in Days to milliseconds
+ */
 function parseDuration(duration) {
   let remain = duration
   let days = Math.floor(remain / (1000 * 60 * 60 * 24))
@@ -200,6 +325,12 @@ function parseDuration(duration) {
   };
 }
 
+/**
+ * 
+ * @param {*} o Object of Time from days to nanoseconds/milliseconds
+ * @param {*} useMilli Optional Boolean parameter, if it should use milliseconds or not in the showof
+ * @returns Formatted Time
+ */
 function formatTime(o, useMilli = false) {
   let parts = []
   if (o.days) {
@@ -242,13 +373,22 @@ function formatTime(o, useMilli = false) {
   }
 }
 
-
+/**
+ * 
+ * @param {*} duration Number | Time in Millisceonds
+ * @param {*} useMilli Optional Boolean parameter, if it should use milliseconds or not in the showof
+ * @returns Formatted Time
+ */
 function duration(duration, useMilli = false) {
   let time = parseDuration(duration)
   return formatTime(time, useMilli)
 }
 
-
+/**
+ * 
+ * @param {*} delayInms Number | Time in Milliseconds
+ * @returns Promise, waiting for the given Milliseconds
+ */
 function delay(delayInms) {
   try {
     return new Promise((resolve) => {
@@ -261,6 +401,11 @@ function delay(delayInms) {
   }
 }
 
+/**
+ * 
+ * @param {*} max Number | 0 - MAX
+ * @returns Number
+ */
 function getRandomInt(max) {
   try {
     return Math.floor(Math.random() * Math.floor(max));
@@ -269,6 +414,12 @@ function getRandomInt(max) {
   }
 }
 
+/**
+ * 
+ * @param {*} min Number | min - max
+ * @param {*} max Number | min - max
+ * @returns Number
+ */
 function getRandomNum(min, max) {
   try {
     return Math.floor(Math.random() * Math.floor((max - min) + min));
@@ -277,24 +428,38 @@ function getRandomNum(min, max) {
   }
 }
 
+/**
+ * 
+ * @param {*} total Number | Time in Milliseconds
+ * @param {*} current  Number | Time in Milliseconds | Current Music Position
+ * @param {*} size Number | Amount of Letters in the Bar (SIZE) Default is: 25
+ * @param {*} line EMOJI | the default line is: "▬"
+ * @param {*} slider EMOJI | the default slider is: "🔷"
+ * @returns STRING a BAR [▬▬▬▬▬🔷▬▬▬▬▬▬▬▬]
+ */
 function createBar(total, current, size = 25, line = "▬", slider = "🔷") {
   try {
     if (!total) throw "MISSING MAX TIME";
-    if (!current) return `**[${mover}${line.repeat(size - 1)}]**\n**00:00:00 / 00:00:00**`;
+    if (!current) return `**[${mover}${line.repeat(size - 1)}]**`;
     let bar = current > total 
         ? [line.repeat(size / 2 * 2), (current / total) * 100] 
         : [line.repeat(Math.round(size / 2 * (current / total))).replace(/.$/, slider) 
           + line.repeat(size - Math.round(size * (current / total)) + 1), current / total];
     if (!String(bar).includes(mover)) {
-      return `**[${mover}${line.repeat(size - 1)}]**\n**00:00:00 / 00:00:00**`;
+      return `**[${mover}${line.repeat(size - 1)}]**`;
     } else{
-      return `**[${bar[0]}]**\n**${new Date(current).toISOString().substr(11, 8) + " / " + (current == 0 ? " ◉ LIVE" : new Date(total).toISOString().substr(11, 8))}**`;
+      return `**[${bar[0]}]**`;
     }
   } catch (e) {
     console.log(String(e.stack).bgRed)
   }
 }
 
+/**
+ * 
+ * @param {*} millis Number | Time in Milliseconds 
+ * @returns Formatted time in: HH:MM:SS HH only if bigger then 0
+ */
 function format(millis) {
   try {
     var h = Math.floor(millis / 3600000),
@@ -307,6 +472,11 @@ function format(millis) {
   }
 }
 
+/**
+ * 
+ * @param {*} str String of message, not replacing pings 
+ * @returns Only the Pinged message
+ */
 function escapeRegex(str) {
   try {
     return str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
@@ -315,6 +485,13 @@ function escapeRegex(str) {
   }
 }
 
+/**
+ * 
+ * @param {*} array ARRAY | Complete Array to work with 
+ * @param {*} from NUMBER | Position of first ITEM
+ * @param {*} to NUMBER | Position where to move it to
+ * @returns ARRAY | the Moved Array
+ */
 function arrayMove(array, from, to) {
   try {
     array = [...array];
@@ -330,6 +507,12 @@ function arrayMove(array, from, to) {
   }
 }
 
+/**
+ * 
+ * @param {*} num Number
+ * @param {*} digits How many digits it should have: 10.231k == 3
+ * @returns Formatted Number
+ */
 function nFormatter(num, digits = 2) {
   const lookup = [
     { value: 1, symbol: "" },
@@ -347,17 +530,28 @@ function nFormatter(num, digits = 2) {
   return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
 }
 
-async function swap_pages(client, message, description, TITLE) {
+/**
+ * @param {*} message Discord Message with a DiscordChannel (TEXTCHANNEL)
+ * @param {*} desc A Description, STRING OR ARRAY
+ * @param {*} TITLE Title of the Embed
+ * @param {*} reactionemojis Emojis for swaping the pages, Default: ["⬅️", "⏹", "➡️"] | OPTIONAL
+ * @param {*} sliceamount If an Array is beeing used, it is the amount of items, per page, if a string then the amount of letters per page, Default Array: 15, Default String: 1000 | OPTIONAL
+ * @returns VOID, works by itself
+ */
+async function swap_pages(message, desc, TITLE, reactionemojis = ["⬅️", "⏹", "➡️"], sliceamount) {
+  if(!message || !message.client) throw "No message with a valid client added"
+  //counter variable
   let currentPage = 0;
   //GET ALL EMBEDS
   let embeds = [];
   //if input is an array
-  if (Array.isArray(description)) {
+  if (Array.isArray(desc)) {
     try {
-      let k = 15;
-      for (let i = 0; i < description.length; i += 15) {
-        const current = description.slice(i, k);
-        k += 15;
+      let arraysliceamount = sliceamount ? sliceamount : 15; 
+      let k = arraysliceamount;
+      for (let i = 0; i < desc.length; i += arraysliceamount) {
+        const current = desc.slice(i, k);
+        k += arraysliceamount;
         const embed = new MessageEmbed()
           .setDescription(current)
           .setTitle(TITLE)
@@ -369,10 +563,11 @@ async function swap_pages(client, message, description, TITLE) {
     } catch {}
   } else {
     try {
-      let k = 1000;
-      for (let i = 0; i < description.length; i += 1000) {
-        const current = description.slice(i, k);
-        k += 1000;
+      let stringsliceamount = sliceamount ? sliceamount : 1000; 
+      let k = stringsliceamount;
+      for (let i = 0; i < desc.length; i += stringsliceamount) {
+        const current = desc.slice(i, k);
+        k += stringsliceamount;
         const embed = new MessageEmbed()
           .setDescription(current)
           .setTitle(TITLE)
@@ -388,7 +583,6 @@ async function swap_pages(client, message, description, TITLE) {
     `**Current Page - ${currentPage + 1}/${embeds.length}**`,
     embeds[currentPage]
   ).catch(e => console.log("THIS IS TO PREVENT A CRASH"))
-  let reactionemojis = ["⬅️", "⏹", "➡️"];
   try {
     for (const emoji of reactionemojis)
       await queueEmbed.react(emoji);
@@ -428,6 +622,11 @@ async function swap_pages(client, message, description, TITLE) {
 
 }
 
+/**
+ * 
+ * @param {*} client Discord Client
+ * Function to Change the Status 
+ */
 function change_status(client) {
   try {
     client.user.setActivity(`${config.prefix}help | ${client.guilds.cache.size} Guilds | ${Math.ceil(client.users.cache.size/1000)}k Members`, {
@@ -437,4 +636,3 @@ function change_status(client) {
     console.log(String(e.stack).bgRed)
   }
 }
-
