@@ -6,11 +6,7 @@
 
 ### [**DISCORD SUPPORT SERVER INVITE**](https://support.milrato.eu)
 
-<br/>
-
 ***
-
-<br/>
 
 ## Installation Guide
 
