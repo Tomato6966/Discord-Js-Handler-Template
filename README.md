@@ -1,6 +1,14 @@
 # Discord-Js-Handler-Template
 
-## [**DISCORD SUPPORT SERVER INVITE**](https://support.milrato.eu)
+### [**DISCORD SUPPORT SERVER INVITE**](https://support.milrato.eu)
+
+## Installation Guide
+
+- in `./botconfig/config.json` Adjust the BOT TOKEN and PREFIX
+- in `./botconfig/settings.json` Adjust the DEFAULT MESSAGES AND OTHER SETTINGS
+- in `./botconfig/embed.json` Adjust the EMBED SETTINGS
+- `npm install` to Install the depedences
+- `node .` to start the Bot
 
 # SUPPORT ME AND MILRATO DEVELOPMENT
 
