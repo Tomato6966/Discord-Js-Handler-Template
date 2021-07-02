@@ -34,10 +34,10 @@ module.exports = async (client, message) => {
     //create the arguments with sliceing of of the rightprefix length
     const args = message.content.slice(matchedPrefix.length).trim().split(/ +/).filter(Boolean);
     //creating the cmd argument by shifting the args by 1
-    const cmd = args.shift().toLowerCase();
+    const cmd = args.length > 0 ? args.shift().toLowerCase() : "";
     //if no cmd added return error
     if (cmd.length === 0) {
-      if (matchedPrefix.includes(client.user.id) && settings.ping_message)
+      if (matchedPrefix.includes(client.user.id) && settings.messages.ping_message)
         return message.channel.send({embed: new Discord.MessageEmbed()
             .setColor(ee.color).setFooter(ee.footertext, ee.footericon)
             .setTitle(replacemsg(settings.messages.ping_message, {
@@ -193,11 +193,12 @@ module.exports = async (client, message) => {
         timeout: 5000
       }).catch((e) => {}));
   } catch (e) {
+    console.log(e)
     return message.channel.send({
       embed: new Discord.MessageEmbed()
         .setColor(ee.wrongcolor)
-        .setTitle(replacemsg(settings.error_occur))
-        .setDescription(replacemsg(settings.error_occur_desc, {
+        .setTitle(replacemsg(settings.messages.error_occur))
+        .setDescription(replacemsg(settings.messages.error_occur_desc, {
           error: error
         }))
     });
