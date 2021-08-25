@@ -36,34 +36,34 @@ module.exports = {
             //set the information
             client.commands.set(thecmd.name, pull)
             //send success message
-            return message.channel.send(new MessageEmbed()
+            return message.reply({embeds: [new MessageEmbed()
               .setColor(ee.color)
               .setFooter(ee.footertext, ee.footericon)
               .setTitle(`Reloaded: \`${args[0]}\``)
-            );
+            ]});
           } catch (e) {
-            return message.channel.send(new MessageEmbed()
+            return message.reply({embeds: [new MessageEmbed()
               .setColor(ee.color)
               .setFooter(ee.footertext, ee.footericon)
               .setTitle(`:x: Could not reload: \`${args[0]}\``)
               .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
-            );
+            ]});
           }
       } else {
-        return message.channel.send(new MessageEmbed()
+        return message.reply({embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
           .setFooter(ee.footertext, ee.footericon)
           .setTitle(`:x: Could not find: \`${args[0]}\``)
-        );
+        ]});
       }
     } catch (e) {
       console.log(String(e.stack).bgRed)
-      return message.channel.send(new MessageEmbed()
-        .setColor(ee.wrongcolor)
-        .setFooter(ee.footertext, ee.footericon)
-        .setTitle(`:x: ERROR | An error occurred`)
-        .setDescription(`\`\`\`${e.message}\`\`\``)
-      );
+      return message.reply({embeds: [new MessageEmbed()
+          .setColor(ee.wrongcolor)
+          .setFooter(ee.footertext, ee.footericon)
+          .setTitle(`❌ ERROR | An error occurred`)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+      ]});
     }
   },
 };

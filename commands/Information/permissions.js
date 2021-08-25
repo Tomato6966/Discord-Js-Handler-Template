@@ -33,7 +33,7 @@ module.exports = {
       }else{
         user = message.author;
       }
-      if(!user || user == null || user.id == null || !user.id) message.reply("<:no:833101993668771842> Could not find the USER")
+      if(!user || user == null || user.id == null || !user.id) message.reply("❌ Could not find the USER")
       try{
         const member = message.guild.members.cache.get(user.id);
         //create the EMBED
@@ -44,8 +44,9 @@ module.exports = {
         embeduserinfo.setColor(ee.color)
         embeduserinfo.setFooter(ee.footertext, ee.footericon)
         //send the EMBED
-        message.channel.send(embeduserinfo)
-      }catch{
+        message.reply({embeds: [embeduserinfo]})
+      }catch (e){
+        console.log(e)
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
@@ -54,17 +55,17 @@ module.exports = {
         embeduserinfo.setColor(ee.color)
         embeduserinfo.setFooter(ee.footertext, ee.footericon)
         //send the EMBED
-        message.channel.send(embeduserinfo)
+        message.reply({embeds: [embeduserinfo]})
       }
       
     } catch (e) {
       console.log(String(e.stack).bgRed)
-      return message.channel.send(new MessageEmbed()
-        .setColor(ee.wrongcolor)
-        .setFooter(ee.footertext, ee.footericon)
-        .setTitle(`<:no:833101993668771842> ERROR | An error occurred`)
-        .setDescription(`\`\`\`${String(JSON.stringify(e)).substr(0, 2000)}\`\`\``)
-      );
+      return message.reply({embeds: [new MessageEmbed()
+          .setColor(ee.wrongcolor)
+          .setFooter(ee.footertext, ee.footericon)
+          .setTitle(`❌ ERROR | An error occurred`)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+      ]});
     }
   }
 }

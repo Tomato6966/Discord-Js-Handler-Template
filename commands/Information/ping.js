@@ -21,25 +21,25 @@ module.exports = {
   run: async (client, message, args, plusArgs, cmdUser, text, prefix) => {
     try{
       var date = Date.now()
-      message.channel.send({ embed: new MessageEmbed()
+      message.reply({ embeds: [new MessageEmbed()
         .setColor(ee.color)
         .setFooter(ee.footertext, ee.footericon)
         .setTitle(`🏓 Pinging....`)
-      }).then(msg => {
-        msg.edit({embed: new MessageEmbed()
+      ]}).then(msg => {
+        msg.edit({embeds: [new MessageEmbed()
           .setColor(ee.color)
           .setFooter(ee.footertext, ee.footericon)
           .setTitle(`🏓 Ping: \`${Math.round(Date.now() - date)}ms\`\n\n:robot: Api Latency: \`${Math.round(client.ws.ping)}ms\``)
-        });
+        ]});
       })
     } catch (e) {
         console.log(String(e.stack).bgRed)
-        return message.channel.send(new MessageEmbed()
+        return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
             .setTitle(`❌ ERROR | An error occurred`)
-            .setDescription(`\`\`\`${e.stack}\`\`\``)
-        );
+            .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+        ]});
     }
   }
 }

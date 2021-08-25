@@ -27,12 +27,12 @@ module.exports = {
       let animatedEmoteRegex = /<a:.+:(\d+)>/gm
 
       if(!message.content.match(hasEmoteRegex))
-        return message.reply("<:no:833101993668771842> Your message does not include a VALID Emoji, please retry by adding a guild specific emoji!")
+        return message.reply("❌ Your message does not include a VALID Emoji, please retry by adding a guild specific emoji!")
       
       if (emoji1 = emoteRegex.exec(message)) {
         let url = "https://cdn.discordapp.com/emojis/" + emoji1[1] + ".png?v=1"
         const emoji = message.guild.emojis.cache.find((emj) => emj.name === emoji1[1] || emj.id == emoji1[1])
-        if(!emoji) return message.channel.send("Please provide a custom Emoji from **THIS GUILD**")
+        if(!emoji) return message.reply("Please provide a custom Emoji from **THIS GUILD**")
       
         const authorFetch = await emoji.fetchAuthor();
         const checkOrCross = (bool) => bool ? "✅" : "❌" ;
@@ -52,13 +52,13 @@ module.exports = {
           `**Deleteable:** \`${checkOrCross(emoji.deleteable)}\``,
           `**Managed:** \`${checkOrCross(emoji.managed)}\``,
         ]).setFooter(ee.footertext, ee.footericon)
-        message.channel.send(embed)
+        message.reply({embeds: [embed]})
       }
       else if (emoji1 = animatedEmoteRegex.exec(message)) {
         let url2 = "https://cdn.discordapp.com/emojis/" + emoji1[1] + ".gif?v=1"
         let attachment2 = new Discord.MessageAttachment(url2, "emoji.gif")
         const emoji = message.guild.emojis.cache.find((emj) => emj.name === emoji1[1] || emj.id == emoji1[1])
-        if(!emoji) return message.channel.send("Please provide a custom Emoji from **THIS GUILD**")
+        if(!emoji) return message.reply("Please provide a custom Emoji from **THIS GUILD**")
       
         const authorFetch = await emoji.fetchAuthor();
         const checkOrCross = (bool) => bool ? "✅" : "❌" ;
@@ -78,19 +78,19 @@ module.exports = {
           `**Deleteable:** \`${checkOrCross(emoji.deleteable)}\``,
           `**Managed:** \`${checkOrCross(emoji.managed)}\``,
         ]).setFooter(ee.footertext, ee.footericon)
-        message.channel.send(embed)
+        message.reply({embeds: [embed]})
       }
       else {
-        message.channel.send("Couldn't find an emoji to paste! if it's uniced(standard) and not a guild Emoji, it's not possible!")
+        message.reply("Couldn't find an emoji to paste! if it's uniced(standard) and not a guild Emoji, it's not possible!")
       }
     } catch (e) {
       console.log(String(e.stack).bgRed)
-      return message.channel.send(new MessageEmbed()
-        .setColor(ee.wrongcolor)
-        .setFooter(ee.footertext, ee.footericon)
-        .setTitle(`<:no:833101993668771842> ERROR | An error occurred`)
-        .setDescription(`\`\`\`${String(JSON.stringify(e)).substr(0, 2000)}\`\`\``)
-      );
+      return message.reply({embeds: [new MessageEmbed()
+          .setColor(ee.wrongcolor)
+          .setFooter(ee.footertext, ee.footericon)
+          .setTitle(`❌ ERROR | An error occurred`)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+      ]});
     }
   }
 }

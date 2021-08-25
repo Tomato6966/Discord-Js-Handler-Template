@@ -12,8 +12,8 @@ const {
 module.exports = {
   name: `eval`,
   category: `Owner`,
-  aliases: [`evaluate`],
-  description: `eval Command`,
+  aliases: [`evaluate`, "evaluate", "eval"],
+  description: `Eval a Command!`,
   usage: `eval <CODE>`,
   memberpermissions: [], //Only allow members with specific Permissions to execute a Commmand [OPTIONAL]
   requiredroles: [], //Only allow specific Users with a Role to execute a Command [OPTIONAL]
@@ -47,17 +47,23 @@ module.exports = {
         prepend: ``,
         append: ``
       });
-      //(over)write embed description
-      evalEmbed.setDescription(`\`\`\`` + splitDescription[0] + `\`\`\``);
-      //send embed
-      message.channel.send(evalEmbed);
+      //array for embeds
+      let embeds = []
+      //For every description send a new embed
+      await splitDescription.forEach(async (m) => {
+        //(over)write embed description
+        evalEmbed.setDescription(`\`\`\`` + m + `\`\`\``);
+        embeds.push(evalEmbed)
+        //send embed
+      });
+      message.reply({embeds: embeds});
     } catch (e) {
-      return message.channel.send(new MessageEmbed()
-        .setColor(ee.wrongcolor)
-        .setFooter(ee.footertext, ee.footericon)
-        .setTitle(`:x: ERROR | An error occurred`)
-        .setDescription(`\`\`\`${e.message}\`\`\``)
-      );
+      return message.reply({embeds: [new MessageEmbed()
+          .setColor(ee.wrongcolor)
+          .setFooter(ee.footertext, ee.footericon)
+          .setTitle(`❌ ERROR | An error occurred`)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+      ]});
     }
   },
 };

@@ -21,20 +21,20 @@ module.exports = { //if [OPTIONAL] it means, you don't need to type it!
     try{
       let title = plusArgs[0];
       let desc = plusArgs.slice(1).join(" ")
-      message.channel.send({embed: new MessageEmbed()
+      message.reply({embeds: [new MessageEmbed()
         .setColor(ee.color)
         .setFooter(ee.footertext, ee.footericon)
         .setTitle(title && desc ? title.substr(0, 256) : "")
-        .setDescription(desc ? desc : title ? title.substr(0, 2048) : "")
+        .setDescription(desc ? desc : title ? title.substr(0, 2048) : "")]
       })
     } catch (e) {
         console.log(String(e.stack).bgRed)
-        return message.channel.send(new MessageEmbed()
+        return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
             .setTitle(`❌ ERROR | An error occurred`)
-            .setDescription(`\`\`\`${e.stack}\`\`\``)
-        );
+            .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+        ]});
     }
   }
 }

@@ -24,7 +24,7 @@ module.exports = {
           const embed = new MessageEmbed();
           const cmd = client.commands.get(args[0].toLowerCase()) || client.commands.get(client.aliases.get(args[0].toLowerCase()));
           if (!cmd) {
-              return message.channel.send(embed.setColor(ee.wrongcolor).setDescription(`No Information found for command **${args[0].toLowerCase()}**`));
+              return message.reply({embeds: [embed.setColor(ee.wrongcolor).setDescription(`No Information found for command **${args[0].toLowerCase()}**`)]});
           }
           if (cmd.name) embed.addField("**Command name**", `\`${cmd.name}\``);
           if (cmd.name) embed.setTitle(`Detailed Information about:\`${cmd.name}\``);
@@ -36,7 +36,7 @@ module.exports = {
               embed.addField("**Usage**", `\`${prefix}${cmd.usage}\``);
               embed.setFooter("Syntax: <> = required, [] = optional");
           }
-          return message.channel.send({embed: embed.setColor(ee.color)});
+          return message.reply({embeds: [embed.setColor(ee.color)]});
         } else {
           const embed = new MessageEmbed()
               .setColor(ee.color)
@@ -55,16 +55,16 @@ module.exports = {
           } catch (e) {
               console.log(String(e.stack).red);
           }
-          message.channel.send({embed: embed});
+          message.reply({embeds: [embed]});
       }
     } catch (e) {
         console.log(String(e.stack).bgRed)
-        return message.channel.send(new MessageEmbed()
+        return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
             .setTitle(`❌ ERROR | An error occurred`)
-            .setDescription(`\`\`\`${e.stack}\`\`\``)
-        );
+            .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+        ]});
     }
   }
 }

@@ -47,27 +47,27 @@ module.exports = {
                 fs.unlinkSync("./image.jpg")
               } catch {}
               //send a success message
-              return message.channel.send(new MessageEmbed()
+              return message.reply({embeds: [new MessageEmbed()
                 .setTitle(`Successfully, changed the Bot avatar!`)
                 .setColor(ee.color)
                 .setFooter(ee.footertext, ee.footericon)
-              );
+              ]});
             })
             .catch(e => {
               //send an error message
-              return message.channel.send(new MessageEmbed()
+              return message.reply({embeds: [new MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setFooter(ee.footertext, ee.footericon)
                 .setTitle(`:x: Something went Wrong`)
                 .setDescription(`\`\`\`${String(JSON.stringify(e)).substr(0, 2000)}\`\`\``)
-              );
+              ]});
             });
         } else {
-          return message.channel.send(new MessageEmbed()
+          return message.reply({embeds: [new MessageEmbed()
             .setTitle(`:x: ERROR | Could not use your Image as an Avatar, make sure it is a \`png\` / \`jpg\``)
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
-          );
+          ]});
         }
       } else if (message.content && textIsImage(message.content)) {
         url = args.join(" ")
@@ -82,28 +82,28 @@ module.exports = {
             } catch {
 
             }
-            return message.channel.send(new MessageEmbed()
+            return message.reply({embeds: [new MessageEmbed()
               .setTitle(`Successfully, changed the Bot avatar!`)
               .setColor(ee.color)
               .setFooter(ee.footertext, ee.footericon)
-            );
+            ]});
           })
           .catch(e => {
-            return message.channel.send(new MessageEmbed()
+            return message.reply({embeds: [new MessageEmbed()
               .setColor(ee.wrongcolor)
               .setFooter(ee.footertext, ee.footericon)
               .setTitle(`:x: Something went Wrong`)
               .setDescription(`\`\`\`${String(JSON.stringify(e)).substr(0, 2000)}\`\`\``)
-            );
+            ]});
           });
 
       } else {
-        return message.channel.send(new MessageEmbed()
+        return message.reply({embeds: [new MessageEmbed()
           .setTitle(`:x: ERROR | Could not use your Image as an Avatar, make sure it is a \`png\` / \`jpg\` / \`webp\``)
           .setDescription(`Useage: \`${prefix}changeavatar <AVATARLINK/IMAGE>\``)
           .setColor(ee.wrongcolor)
           .setFooter(ee.footertext, ee.footericon)
-        );
+        ]});
       }
 
       function attachIsImage(msgAttach) {
@@ -122,11 +122,12 @@ module.exports = {
 
     } catch (e) {
       console.log(String(e.stack).bgRed)
-      return message.channel.send(new MessageEmbed()
-        .setColor(ee.wrongcolor).setFooter(ee.footertext, ee.footericon)
-        .setTitle(`:x: Something went Wrong`)
-        .setDescription(`\`\`\`${String(JSON.stringify(e)).substr(0, 2000)}\`\`\``)
-      );
+      return message.reply({embeds: [new MessageEmbed()
+          .setColor(ee.wrongcolor)
+          .setFooter(ee.footertext, ee.footericon)
+          .setTitle(`❌ ERROR | An error occurred`)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+      ]});
     }
   },
 };

@@ -1,6 +1,6 @@
 //here the event starts
-module.exports = (client, error) => {
-  console.log(String(error).yellow.dim);
+module.exports = (client, rateLimitData) => {
+    console.log(JSON.stringify(rateLimitData).grey.italic.dim);
 }
 /**
   * @INFO

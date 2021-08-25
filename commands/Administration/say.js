@@ -20,21 +20,21 @@ module.exports = {
     run: async (client, message, args, plusArgs, cmdUser, text, prefix) => {
     try{
       if(!args[0])
-        return message.channel.send({embed: new MessageEmbed()
+        return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
             .setTitle(`❌ ERROR | You didn't provided a Text`)
-            .setDescription(`Usage: \`${prefix}say <Your Text>\``)
+            .setDescription(`Usage: \`${prefix}say <Your Text>\``)]
         });
-      message.channel.send(text.substr(0, 2000));
+      message.reply(text.substr(0, 2000));
     } catch (e) {
         console.log(String(e.stack).bgRed)
-        return message.channel.send(new MessageEmbed()
+        return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.wrongcolor)
             .setFooter(ee.footertext, ee.footericon)
             .setTitle(`❌ ERROR | An error occurred`)
-            .setDescription(`\`\`\`${e.stack}\`\`\``)
-        );
+            .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+        ]});
     }
   }
 }

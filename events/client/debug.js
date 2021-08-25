@@ -1,6 +1,6 @@
 //here the event starts
-module.exports = (client, error) => {
-  console.log(String(error).yellow.dim);
+module.exports = (client, info) => {
+  //console.log(String(info).grey);
 }
 /**
   * @INFO

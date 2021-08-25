@@ -25,37 +25,38 @@ module.exports = {
     try {
       //if args too long send error
       if (args.join(" ").length > 32){
-        return message.channel.send(new MessageEmbed()
+        return message.reply({embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
           .setFooter(ee.footertext, ee.footericon)
           .setTitle(`:x: Bot Name too long, can't have more then 32 Letters!`)
-        );
+        ]});
       }
       //set a user
       client.user.setUsername(args.join(" "))
         .then(user => {
           //send success message
-          return message.channel.send(new MessageEmbed()
+          return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.color)
             .setFooter(ee.footertext, ee.footericon)
             .setTitle(`Changed my Name to: \`${user.username}\``)
-          );
+          ]});
         })
         .catch(e => {
           //send error message
-          return message.channel.send(new MessageEmbed()
+          return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.wrongcolor).setFooter(ee.footertext, ee.footericon)
             .setTitle(`:x: Something went Wrong`)
             .setDescription(`\`\`\`${String(JSON.stringify(e)).substr(0, 2000)}\`\`\``)
-          );
+          ]});
         });
     } catch (e) {
       console.log(String(e.stack).bgRed)
-      return message.channel.send(new MessageEmbed()
-        .setColor(ee.wrongcolor).setFooter(ee.footertext, ee.footericon)
-        .setTitle(`:x: Something went Wrong`)
-        .setDescription(`\`\`\`${String(JSON.stringify(e)).substr(0, 2000)}\`\`\``)
-      );
+      return message.reply({embeds: [new MessageEmbed()
+          .setColor(ee.wrongcolor)
+          .setFooter(ee.footertext, ee.footericon)
+          .setTitle(`❌ ERROR | An error occurred`)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+      ]});
     }
   },
 };
