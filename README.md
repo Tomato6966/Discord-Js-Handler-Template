@@ -11,7 +11,7 @@
 ## Installation Guide
 
 <br/>
-
+- have **node.js v16.6 or higher**
 - in `./botconfig/config.json` Adjust the BOT TOKEN and PREFIX
 - in `./botconfig/settings.json` Adjust the DEFAULT MESSAGES AND OTHER SETTINGS
 - in `./botconfig/embed.json` Adjust the EMBED SETTINGS
