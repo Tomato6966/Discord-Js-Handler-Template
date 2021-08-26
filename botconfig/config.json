@@ -1,4 +1,16 @@
 {
   "token": "DISCORD BOT TOKEN",
-  "prefix": "!"
+  "prefix": "!",
+  "slashCommandsDirs": [
+        {
+                "Folder": "Info",
+                "CmdName": "info",
+                "CmdDescription": "Grant specific Information about something!"
+        },
+        {
+                "Folder": "Admin",
+                "CmdName": "admin",
+                "CmdDescription": "Administrate the Server!"
+        }
+   ]
 }
