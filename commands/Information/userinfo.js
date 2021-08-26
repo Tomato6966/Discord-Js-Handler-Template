@@ -98,7 +98,7 @@ module.exports = {
           }
         }
         embeduserinfo.addField('**❱ Activity:**',`${userstatus}`)
-        embeduserinfo.addField('**❱ Permissions:**',`${message.member.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
+        embeduserinfo.addField('**❱ Permissions:**',`${member.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
         embeduserinfo.addField(`❱ [${roles.cache.size}] Roles: `, roles.cache.size < 25 ? roles.cache.array().sort((a, b) => b.rawPosition - a.rawPosition).map(role => `<@&${role.id}>`).join(', ') : roles.cache.size > 25 ? trimArray(roles.cache) : 'None')
         embeduserinfo.setColor(ee.color)
         embeduserinfo.setFooter(ee.footertext, ee.footericon)
@@ -129,7 +129,7 @@ module.exports = {
           }
         }
         embeduserinfo.addField('**❱ Activity:**',`${userstatus}`)
-        embeduserinfo.addField('**❱ Permissions:**',`${message.member.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
+        embeduserinfo.addField('**❱ Permissions:**',`${member.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
         embeduserinfo.setColor(ee.color)
         embeduserinfo.setFooter(ee.footertext, ee.footericon)
         //send the EMBED
