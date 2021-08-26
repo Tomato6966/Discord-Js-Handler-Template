@@ -20,9 +20,9 @@ const flags = {
 	VERIFIED_DEVELOPER: 'Verified Bot Developer'
 };
 function trimArray(arr, maxLen = 25) {
-  if (arr.array().length > maxLen) {
-    const len = arr.array().length - maxLen;
-    arr = arr.array().sort((a, b) => b.rawPosition - a.rawPosition).slice(0, maxLen);
+  if (Array.from(arr.values()).length > maxLen) {
+    const len = Array.from(arr.values()).length - maxLen;
+    arr = Array.from(arr.values()).sort((a, b) => b.rawPosition - a.rawPosition).slice(0, maxLen);
     arr.map(role => `<@&${role.id}>`)
     arr.push(`${len} more...`);
   }
@@ -99,7 +99,7 @@ module.exports = {
         }
         embeduserinfo.addField('**❱ Activity:**',`${userstatus}`)
         embeduserinfo.addField('**❱ Permissions:**',`${member.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
-        embeduserinfo.addField(`❱ [${roles.cache.size}] Roles: `, roles.cache.size < 25 ? roles.cache.array().sort((a, b) => b.rawPosition - a.rawPosition).map(role => `<@&${role.id}>`).join(', ') : roles.cache.size > 25 ? trimArray(roles.cache) : 'None')
+        embeduserinfo.addField(`❱ [${roles.cache.size}] Roles: `, roles.cache.size < 25 ? Array.from(roles.cache.values()).sort((a, b) => b.rawPosition - a.rawPosition).map(role => `<@&${role.id}>`).join(', ') : roles.cache.size > 25 ? trimArray(roles.cache) : 'None')
         embeduserinfo.setColor(ee.color)
         embeduserinfo.setFooter(ee.footertext, ee.footericon)
         //send the EMBED
