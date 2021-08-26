@@ -43,7 +43,7 @@ client.slashCommands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 client.categories = require("fs").readdirSync(`./commands`);
 //Requuire the Handlers
-["events", "commands"].forEach(h => {
+["events", "commands", "slashCommands" ].forEach(h => {
     require(`./handlers/${h}`)(client);
 })
 //Start the Bot
