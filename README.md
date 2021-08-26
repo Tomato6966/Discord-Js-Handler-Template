@@ -29,6 +29,22 @@
 ***
 
 <br/>
+
+## Slash Commands Information
+
+> To add a Subcommand create a Folder in `./slashCommands`
+
+> Make sure to add it's Settings in `./botconfig/config.json`
+
+> You can't have more folder then 1 Layer
+
+> If u want to create "normal" Slash commands create the files just in `./slashCommands`
+
+<br/>
+
+***
+
+<br/>
 <br/>
 
 # SUPPORT ME AND MILRATO DEVELOPMENT
