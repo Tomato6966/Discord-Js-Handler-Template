@@ -38,7 +38,7 @@ module.exports = async (client, message) => {
         }
         try {
           //if Command has specific permission return error
-          if (command.memberpermissions && command.memberpermissions.length > 0 && !message.member.hasPermission(command.memberpermissions)) {
+          if (command.memberpermissions && command.memberpermissions.length > 0 && !message.member.permissions.has(command.memberpermissions)) {
             return message.reply({ embeds: [new Discord.MessageEmbed()
                 .setColor(ee.wrongcolor)
                 .setFooter(ee.footertext, ee.footericon)
