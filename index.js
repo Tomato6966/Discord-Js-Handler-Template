@@ -39,7 +39,7 @@ const client = new Discord.Client({
 //Define some Global Collections
 client.commands = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
-client.slashCommands = New Discord.Collection();
+client.slashCommands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 client.categories = require("fs").readdirSync(`./commands`);
 //Requuire the Handlers
