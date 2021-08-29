@@ -133,6 +133,7 @@ module.exports = (client) => {
 			console.log(`${client.slashCommands.size} slashCommands Loaded`.brightGreen);
 		})
 		client.on("guildCreate", (guild) => {
+			const rest = new REST({ version: '9' }).setToken(config.token);
 			rest.put(Routes.applicationGuildCommands(client.user.id, guild.id), { body: allCommands });
 			console.log(`${client.slashCommands.size} slashCommands Loaded for ${guild.name}`.brightGreen);
 		})
