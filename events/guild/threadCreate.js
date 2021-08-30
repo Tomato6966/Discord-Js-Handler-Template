@@ -1,5 +1,5 @@
 module.exports = async (client, thread) => {
-    if(thread.joinable()){
+    if(thread.joinable){
         try{
             await thread.join();
         }catch (e){
