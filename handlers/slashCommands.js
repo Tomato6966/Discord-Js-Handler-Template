@@ -124,7 +124,7 @@ module.exports = (client) => {
         
 		//Once the Bot is ready, add all Slas Commands to each guild
 		client.on("ready", () => {
-			if(loadSlashsGlobal){
+			if(config.loadSlashsGlobal){
 				client.application.commands.set(allCommands)
 				.then(slashCommandsData => {
 					console.log(`${slashCommandsData.size} slashCommands ${`(With ${slashCommandsData.map(d => d.options).flat.length} Subcommands)`.green} Loaded for all: ${`All possible Guilds`.underline}`.brightGreen); 
