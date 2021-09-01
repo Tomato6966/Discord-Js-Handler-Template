@@ -128,6 +128,7 @@ module.exports = (client) => {
 				client.application.commands.set(allCommands)
 				.then(slashCommandsData => {
 					console.log(`${slashCommandsData.size} slashCommands ${`(With ${slashCommandsData.map(d => d.options).flat.length} Subcommands)`.green} Loaded for all: ${`All possible Guilds`.underline}`.brightGreen); 
+					console.log(`Because u are Using Global Settings, it can take up to 1 hour until the Commands are changed!`.bold.yellow)
 				}).catch((e)=>console.log(e));
 			} else {
 				client.guilds.cache.map(g => g).forEach((guild) => {
