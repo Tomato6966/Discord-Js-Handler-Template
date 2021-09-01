@@ -1,7 +1,5 @@
 const { readdirSync, lstatSync } = require("fs");
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
 const config = require("../botconfig/config.json");
 const dirSetup = config.slashCommandsDirs;
 module.exports = (client) => {
@@ -126,16 +124,36 @@ module.exports = (client) => {
         
 		//Once the Bot is ready, add all Slas Commands to each guild
 		client.on("ready", () => {
-			const rest = new REST({ version: '9' }).setToken(config.token);
-			client.guilds.cache.map(g => g.id).forEach((gId) => {
-				rest.put(Routes.applicationGuildCommands(client.user.id, gId), { body: allCommands });
-			})
-			console.log(`${client.slashCommands.size} slashCommands Loaded`.brightGreen);
+			if(loadSlashsGlobal){
+				client.application.commands.set(allCommands)
+				.then(slashCommandsData => {
+					console.log(`${slashCommandsData.size} slashCommands ${`(With ${slashCommandsData.map(d => d.options).flat.length} Subcommands)`.green} Loaded for all: ${`All possible Guilds`.underline}`.brightGreen); 
+				}).catch((e)=>console.log(e));
+			} else {
+				client.guilds.cache.map(g => g).forEach((guild) => {
+					try{
+						guild.commands.set(allCommands)
+						.then(slashCommandsData => {
+							console.log(`${slashCommandsData.size} slashCommands ${`(With ${slashCommandsData.map(d => d.options).flat.length} Subcommands)`.green} Loaded for: ${`${guild.name}`.underline}`.brightGreen); 
+						}).catch((e)=>console.log(e));
+					}catch (e){
+						console.log(String(e).grey)
+					}
+				});
+			}
 		})
+		//DISABLE WHEN USING GLOBAL!
 		client.on("guildCreate", (guild) => {
-			const rest = new REST({ version: '9' }).setToken(config.token);
-			rest.put(Routes.applicationGuildCommands(client.user.id, guild.id), { body: allCommands });
-			console.log(`${client.slashCommands.size} slashCommands Loaded for ${guild.name}`.brightGreen);
+			try{
+				if(!config.loadSlashsGlobal){
+					guild.commands.set(allCommands)
+						.then(slashCommandsData => {
+							console.log(`${slashCommandsData.size} slashCommands ${`(With ${slashCommandsData.map(d => d.options).flat.length} Subcommands)`.green} Loaded for: ${`${guild.name}`.underline}`.brightGreen); 
+						}).catch((e)=>console.log(e));
+				}
+			}catch (e){
+				console.log(String(e).grey)
+			}
 		})
 		
     } catch (e) {
