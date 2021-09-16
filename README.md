@@ -40,13 +40,6 @@
 
 > If u want to create "normal" Slash commands create the files just in `./slashCommands`
 
-<br/>
-
-***
-
-<br/>
-<br/>
-
 ***
 
 ## [Discord Server 😎](https://discord.gg/milrato) | [Website](https://milrato.dev)
