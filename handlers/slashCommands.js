@@ -31,9 +31,17 @@ module.exports = (client) => {
 											subcommand.addIntegerOption((op) =>
 												op.setName(String(option.Integer.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Integer.description).setRequired(option.Integer.required)
 											)
+										} else if(option.Number && option.Number.name && option.Number.description){
+											subcommand.addNumberOption((op) =>
+												op.setName(String(option.Number.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Number.description).setRequired(option.Number.required)
+											)
 										} else if(option.String && option.String.name && option.String.description){
 											subcommand.addStringOption((op) =>
 												op.setName(String(option.String.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.String.description).setRequired(option.String.required)
+											)
+										} else if(option.Boolean && option.Boolean.name && option.Boolean.description){
+											subcommand.addBooleanOption((op) =>
+												op.setName(String(option.Boolean.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Boolean.description).setRequired(option.Boolean.required)
 											)
 										} else if(option.Channel && option.Channel.name && option.Channel.description){
 											subcommand.addChannelOption((op) =>
@@ -49,7 +57,7 @@ module.exports = (client) => {
 												.addChoices(option.StringChoices.choices.map(c=> [String(c[0]).replace(/\s+/g, '_').toLowerCase(),String(c[1])] )),
 											)
 										} else if(option.IntChoices && option.IntChoices.name && option.IntChoices.description && option.IntChoices.choices && option.IntChoices.choices.length > 0){
-											subcommand.addStringOption((op) =>
+											subcommand.addIntegerOption((op) =>
 												op.setName(String(option.IntChoices.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.IntChoices.description).setRequired(option.IntChoices.required)
 												.addChoices(option.IntChoices.choices.map(c=> [String(c[0]).replace(/\s+/g, '_').toLowerCase(),parseInt(c[1])] )),
 											)
