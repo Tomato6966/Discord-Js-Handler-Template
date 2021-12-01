@@ -3,9 +3,9 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const config = require("../botconfig/config.json");
 const dirSetup = config.slashCommandsDirs;
 module.exports = (client) => {
-    try {
+	try {
 		let allCommands = [];
-        readdirSync("./slashCommands/").forEach((dir) => {
+		readdirSync("./slashCommands/").forEach((dir) => {
 			if(lstatSync(`./slashCommands/${dir}`).isDirectory()) {
 				const groupName = dir;
 				const cmdSetup = dirSetup.find(d=>d.Folder == dir);
@@ -39,10 +39,6 @@ module.exports = (client) => {
 											subcommand.addStringOption((op) =>
 												op.setName(String(option.String.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.String.description).setRequired(option.String.required)
 											)
-										} else if(option.Boolean && option.Boolean.name && option.Boolean.description){
-											subcommand.addBooleanOption((op) =>
-												op.setName(String(option.Boolean.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Boolean.description).setRequired(option.Boolean.required)
-											)
 										} else if(option.Channel && option.Channel.name && option.Channel.description){
 											subcommand.addChannelOption((op) =>
 												op.setName(String(option.Channel.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Channel.description).setRequired(option.Channel.required)
@@ -50,6 +46,10 @@ module.exports = (client) => {
 										} else if(option.Role && option.Role.name && option.Role.description){
 											subcommand.addRoleOption((op) =>
 												op.setName(String(option.Role.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Role.description).setRequired(option.Role.required)
+											)
+										} else if(option.Boolean && option.Boolean.name && option.Boolean.description){
+											subcommand.addBooleanOption((op) =>
+												op.setName(String(option.Boolean.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Boolean.description).setRequired(option.Boolean.required)
 											)
 										} else if(option.StringChoices && option.StringChoices.name && option.StringChoices.description && option.StringChoices.choices && option.StringChoices.choices.length > 0){
 											subcommand.addStringOption((op) =>
@@ -61,8 +61,13 @@ module.exports = (client) => {
 												op.setName(String(option.IntChoices.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.IntChoices.description).setRequired(option.IntChoices.required)
 												.addChoices(option.IntChoices.choices.map(c=> [String(c[0]).replace(/\s+/g, '_').toLowerCase(),parseInt(c[1])] )),
 											)
+										} else if(option.NumChoices && option.NumChoices.name && option.NumChoices.description && option.NumChoices.choices && option.NumChoices.choices.length > 0){
+											Command.addNumberOption((op) =>
+												op.setName(String(option.NumChoices.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.NumChoices.description).setRequired(option.NumChoices.required)
+												.addChoices(option.NumChoices.choices.map(c=> [String(c[0]).replace(/\s+/g, '_').toLowerCase(),parseFloat(c[1])] )),
+											)
 										} else {
-											console.log(`A Option is missing the Name or/and the Description of ${pull.name}`)
+											console.log(`A Option is missing the Name or/and the Description of ${pull.name} | ${option.name ?? "NULL"}/${option.description ?? "NULL"}`)
 										}
 									}
 								}
@@ -124,6 +129,11 @@ module.exports = (client) => {
 										op.setName(String(option.IntChoices.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.IntChoices.description).setRequired(option.IntChoices.required)
 										.addChoices(option.IntChoices.choices.map(c=> [String(c[0]).replace(/\s+/g, '_').toLowerCase(),parseInt(c[1])] )),
 									)
+								} else if(option.NumChoices && option.NumChoices.name && option.NumChoices.description && option.NumChoices.choices && option.NumChoices.choices.length > 0){
+									Command.addNumberOption((op) =>
+										op.setName(String(option.NumChoices.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.NumChoices.description).setRequired(option.NumChoices.required)
+										.addChoices(option.NumChoices.choices.map(c=> [String(c[0]).replace(/\s+/g, '_').toLowerCase(),parseFloat(c[1])] )),
+									)
 								} else {
 									console.log(`A Option is missing the Name or/and the Description of ${pull.name}`)
 								}
@@ -136,8 +146,8 @@ module.exports = (client) => {
 					console.log(file, `error -> missing a help.name, or help.name is not a string.`.brightRed);
 				}
 			}
-        });
-        
+		});
+		
 		//Once the Bot is ready, add all Slas Commands to each guild
 		client.on("ready", () => {
 			if(config.loadSlashsGlobal){
@@ -173,16 +183,7 @@ module.exports = (client) => {
 			}
 		})
 		
-    } catch (e) {
-        console.log(String(e.stack).bgRed)
-    }
+	} catch (e) {
+		console.log(String(e.stack).bgRed)
+	}
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
