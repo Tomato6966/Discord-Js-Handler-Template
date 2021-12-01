@@ -27,6 +27,14 @@ module.exports = (client) => {
 											subcommand.addUserOption((op) =>
 												op.setName(String(option.User.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.User.description).setRequired(option.User.required)
 											)
+										} else if(option.Number && option.Number.name && option.Number.description){
+											subcommand.addNumberOption((op) =>
+												op.setName(String(option.Number.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Number.description).setRequired(option.Number.required)
+											)
+										} else if(option.Boolean && option.Boolean.name && option.Boolean.description){
+											subcommand.addBooleanOption((op) =>
+												op.setName(String(option.Boolean.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Boolean.description).setRequired(option.Boolean.required)
+											)
 										} else if(option.Integer && option.Integer.name && option.Integer.description){
 											subcommand.addIntegerOption((op) =>
 												op.setName(String(option.Integer.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Integer.description).setRequired(option.Integer.required)
@@ -90,6 +98,14 @@ module.exports = (client) => {
 								} else if(option.Integer && option.Integer.name && option.Integer.description){
 									Command.addIntegerOption((op) =>
 										op.setName(String(option.Integer.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Integer.description).setRequired(option.Integer.required)
+									)
+								} else if(option.Number && option.Number.name && option.Number.description){
+									subcommand.addNumberOption((op) =>
+										op.setName(String(option.Number.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Number.description).setRequired(option.Number.required)
+									)
+								} else if(option.Boolean && option.Boolean.name && option.Boolean.description){
+									subcommand.addBooleanOption((op) =>
+										op.setName(String(option.Boolean.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Boolean.description).setRequired(option.Boolean.required)
 									)
 								} else if(option.String && option.String.name && option.String.description){
 									Command.addStringOption((op) =>
