@@ -17,7 +17,8 @@ module.exports = {
 		// {"User": { name: "user", description: "Pick a user", required: true }}, //to use in the code: interacton.getUser("user")
 		// {"Channel": { name: "channel", description: "Pick a channel", required: true }}, //to use in the code: interacton.getChannel("channel")
 		// {"Role": { name: "role", description: "Pick a role", required: true }}, //to use in the code: interacton.getRole("role")
-		// {"IntChoices": { name: "intchoice", description: "Select an IntChoice", required: true, choices: [["Bot", 1], ["Discord Api", 2]] }}, //here the second array input MUST BE A NUMBER // TO USE IN THE CODE: interacton.getInteger("intchoice")
+		// {"IntChoices": { name: "intchoice", description: "Select an IntChoice", required: true, choices: [["Int1", 1], ["Int2", 2]] }}, //here the second array input MUST BE A INTEGER // TO USE IN THE CODE: interacton.getInteger("intchoice")
+		// {"NumChoices": { name: "numchoice", description: "Select a NumChoice", required: true, choices: [["Num1", 1.1], ["Num2", 2]] }}, //here the second array input MUST BE A NUMBER // TO USE IN THE CODE: interacton.getNumber("numchoice")
 		// {"StringChoices": { name: "stringchoice", description: "Select a StringChoice", required: true, choices: [["Bot", "botping"], ["Discord Api", "api"]] }}, //here the second array input MUST BE A STRING // TO USE IN THE CODE: interacton.getString("stringchoice")
 	],
 	run: async (client, interaction) => {
