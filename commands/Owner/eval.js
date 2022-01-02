@@ -1,6 +1,8 @@
 const {
   MessageEmbed,
-  splitMessage
+  Util: {
+    splitMessage
+  }
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
 var config = require(`../../botconfig/config.json`);
