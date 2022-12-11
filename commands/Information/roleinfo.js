@@ -38,37 +38,31 @@ module.exports = {
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(message.guild.iconURL({ dynamic: true, size: 512 }))
-        embeduserinfo.setAuthor("Information about:   " + role.name, message.guild.iconURL({ dynamic: true }), "https://discord.gg/FQGXbypRf8")
-        embeduserinfo.addField('**❱ Name:**',`\`${role.name}\``,true)
-        embeduserinfo.addField('**❱ ID:**',`\`${role.id}\``,true)
-        embeduserinfo.addField('**❱ Color:**',`\`${role.hexColor}\``,true)
-        embeduserinfo.addField('**❱ Date Created:**', "\`"+moment(role.createdAt).format("DD/MM/YYYY") + "\`\n" + "`"+ moment(role.createdAt).format("hh:mm:ss") + "\`",true)
-        embeduserinfo.addField('**❱ Position:**',`\`${role.rawPosition}\``,true)
-        embeduserinfo.addField('**❱ MemberCount:**',`\`${role.members.size} Members have it\``,true)
-        embeduserinfo.addField('**❱ Hoisted:**',`\`${role.hoist ? "✔️" : "❌"}\``,true)
-        embeduserinfo.addField('**❱ Mentionable:**',`\`${role.mentionable ? "✔️" : "❌"}\``,true)
-        embeduserinfo.addField('**❱ Permissions:**',`${role.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
+        embeduserinfo.setAuthor({ name: "Information about:   " + role.name, iconURL: message.guild.iconURL({ dynamic: true })})
+        embeduserinfo.addFields(
+          { name: '❱ Name:', value: `\`${role.name}\``, inline: true },
+          { name: '❱ ID:', value: `\`${role.id}\``, inline: true },
+          { name: '❱ Color:', value: `\`${role.hexColor}\``, inline: true },
+          { name: '❱ Date Created:', value: "\`"+moment(role.createdAt).format("DD/MM/YYYY") + "\`\n" + "`"+ moment(role.createdAt).format("hh:mm:ss") + "\`", inline: true },
+          { name: '❱ Position:', value: `\`${role.rawPosition}\``, inline: true },
+          { name: '❱ MemberCount:', value: `\`${role.members.size} Members have it\``, inline: true },
+          { name: '❱ Hoisted:', value: `\`${role.hoist ? "✔️" : "❌"}\``, inline: true },
+          { name: '❱ Mentionable:', value: `\`${role.mentionable ? "✔️" : "❌"}\``, inline: true },
+          { name: '❱ Permissions:', value: `${role.permissions.toArray().map(p=>`\`${p}\``).join(", ")}` },
+        )
         embeduserinfo.setColor(role.hexColor)
-        embeduserinfo.setFooter(ee.footertext, ee.footericon)
+        embeduserinfo.setFooter({ text: ee.footertext, iconURL: ee.footericon})
         //send the EMBED
         message.reply({embeds: [embeduserinfo]})
     } catch (e) {
       console.log(String(e.stack).bgRed)
       return message.reply({embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
+          .setFooter({ text: ee.footertext, iconURL: ee.footericon})
           .setTitle(`❌ ERROR | An error occurred`)
-          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
       ]});
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
+

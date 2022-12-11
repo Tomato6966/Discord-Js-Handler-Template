@@ -73,86 +73,48 @@ module.exports = {
         const member = message.guild.members.cache.get(user.id);
         const roles = member.roles;
         const userFlags = member.user.flags.toArray();
-        const activity = member.user.presence.activities[0];
+        permissions = member.permissions.toArray().map(p=>`\`${p}\``).join(", ")
+        if(permissions.includes("ADMINISTRATOR")) 
+          permissions = "`ADMINISTRATOR`"
+
+
+        
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
-        embeduserinfo.setAuthor("Information about:   " + member.user.username + "#" + member.user.discriminator, member.user.displayAvatarURL({ dynamic: true }), "https://discord.gg/FQGXbypRf8")
-        embeduserinfo.addField('**❱ Username:**',`<@${member.user.id}>\n\`${member.user.tag}\``,true)
-        embeduserinfo.addField('**❱ ID:**',`\`${member.id}\``,true)
-        embeduserinfo.addField('**❱ Avatar:**',`[\`Link to avatar\`](${member.user.displayAvatarURL({ format: "png" })})`,true)
-        embeduserinfo.addField('**❱ Date Join DC:**', "\`"+moment(member.user.createdTimestamp).format("DD/MM/YYYY") + "\`\n" + "`"+ moment(member.user.createdTimestamp).format("hh:mm:ss") + "\`",true)
-        embeduserinfo.addField('**❱ Date Join Guild:**', "\`"+moment(member.joinedTimestamp).format("DD/MM/YYYY") + "\`\n" + "`"+ moment(member.joinedTimestamp).format("hh:mm:ss")+ "\`",true)
-        embeduserinfo.addField('**❱ Flags:**',`\`${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}\``,true)
-        embeduserinfo.addField('**❱ Status:**',`\`${statuses[member.user.presence.status]} ${member.user.presence.status}\``,true)
-        embeduserinfo.addField('**❱ Highest Role:**',`${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}`,true)
-        embeduserinfo.addField('**❱ Is a Bot:**',`\`${member.user.bot ? "✔️" : "❌"}\``,true)
-        var userstatus = "Not having an activity";
-        if(activity){
-          if(activity.type === "CUSTOM_STATUS"){
-            let emoji = `${activity.emoji ? activity.emoji.id ? `<${activity.emoji.animated ? "a": ""}:${activity.emoji.name}:${activity.emoji.id}>`: activity.emoji.name : ""}`
-            userstatus = `${emoji} \`${activity.state || 'Not having an acitivty.'}\``
-          }
-          else{
-            userstatus = `\`${activity.type.toLowerCase().charAt(0).toUpperCase() + activity.type.toLowerCase().slice(1)} ${activity.name}\``
-          }
-        }
-        embeduserinfo.addField('**❱ Activity:**',`${userstatus}`)
-        embeduserinfo.addField('**❱ Permissions:**',`${member.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
-        embeduserinfo.addField(`❱ [${roles.cache.size}] Roles: `, roles.cache.size < 25 ? Array.from(roles.cache.values()).sort((a, b) => b.rawPosition - a.rawPosition).map(role => `<@&${role.id}>`).join(', ') : roles.cache.size > 25 ? trimArray(roles.cache) : 'None')
+        embeduserinfo.setAuthor({ name:"Information about:   " + member.user.username + "#" + member.user.discriminator, iconURL: member.user.displayAvatarURL({ dynamic: true })})
+        embeduserinfo.addFields(
+          {name: '**❱ Username:**', value: `<@${member.user.id}>\n\`${member.user.tag}\``, inline: true},
+          {name: '**❱ ID:**', value: `\`${member.user.id}\``, inline: true},
+          {name: '**❱ Flags:**', value: `\`${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}\``, inline: true},
+          {name: '**❱ Avatar:**', value: `[Link to avatar](${member.user.displayAvatarURL({ dynamic: true })})`, inline: true},
+          {name: '**❱ Time Created:**', value: `${moment(member.user.createdTimestamp).format("LT")} ${moment(member.user.createdTimestamp).format("LL")} ${moment(member.user.createdTimestamp).fromNow()}`, inline: true},
+          {name: '**❱ Is a Bot:**', value: `\`${user.bot ? "✔️" : "❌"}\``, inline: true},
+          {name: '**❱ Permissions:**', value: `${permissions}`, inline: true},
+          {name: `❱ [${roles.cache.size}] Roles: `, value: roles.cache.size < 25 ? Array.from(roles.cache.values()).sort((a, b) => b.rawPosition - a.rawPosition).map(role => `<@&${role.id}>`).join(', ') : roles.cache.size > 25 ? trimArray(roles.cache) : 'None', inline: true},
+        )
         embeduserinfo.setColor(ee.color)
-        embeduserinfo.setFooter(ee.footertext, ee.footericon)
+        embeduserinfo.setFooter({ text: ee.footertext, iconURL: ee.footericon})
         //send the EMBED
-        message.reply({embeds: [embeduserinfo]})
-      }catch (e){
-        console.log(e)
-        const userFlags = user.flags.toArray();
-        const activity = user.presence.activities[0];
-        //create the EMBED
-        const embeduserinfo = new MessageEmbed()
-        embeduserinfo.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
-        embeduserinfo.setAuthor("Information about:   " + user.username + "#" + user.discriminator, user.displayAvatarURL({ dynamic: true }), "https://discord.gg/FQGXbypRf8")
-        embeduserinfo.addField('**❱ Username:**',`<@${user.id}>\n\`${user.tag}\``,true)
-        embeduserinfo.addField('**❱ ID:**',`\`${user.id}\``,true)
-        embeduserinfo.addField('**❱ Avatar:**',`[\`Link to avatar\`](${user.displayAvatarURL({ format: "png" })})`,true)
-        embeduserinfo.addField('**❱ Flags:**',`\`${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}\``,true)
-        embeduserinfo.addField('**❱ Status:**',`\`${statuses[user.presence.status]} ${user.presence.status}\``,true)
-        embeduserinfo.addField('**❱ Is a Bot:**',`\`${user.bot ? "✔️" : "❌"}\``,true)
-        var userstatus = "Not having an activity";
-        if(activity){
-          if(activity.type === "CUSTOM_STATUS"){
-            let emoji = `${activity.emoji ? activity.emoji.id ? `<${activity.emoji.animated ? "a": ""}:${activity.emoji.name}:${activity.emoji.id}>`: activity.emoji.name : ""}`
-            userstatus = `${emoji} \`${activity.state || 'Not having an acitivty.'}\``
-          }
-          else{
-            userstatus = `\`${activity.type.toLowerCase().charAt(0).toUpperCase() + activity.type.toLowerCase().slice(1)} ${activity.name}\``
-          }
-        }
-        embeduserinfo.addField('**❱ Activity:**',`${userstatus}`)
-        embeduserinfo.addField('**❱ Permissions:**',`${member.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
-        embeduserinfo.setColor(ee.color)
-        embeduserinfo.setFooter(ee.footertext, ee.footericon)
-        //send the EMBED
-        message.reply({embeds: [embeduserinfo]})
+        message.reply({embeds: [embeduserinfo]});
       }
-      
-    } catch (e) {
+      catch (e){
+        console.log(String(e.stack).bgRed)
+        return message.reply({embeds: [new MessageEmbed()
+            .setColor(ee.wrongcolor)
+            .setFooter({ text: ee.footertext, iconURL: ee.footericon})
+            .setTitle(`❌ ERROR | An error occurred`)
+            .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
+        ]});
+      }
+  } catch (e) {
       console.log(String(e.stack).bgRed)
       return message.reply({embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
+          .setFooter({ text: ee.footertext, iconURL: ee.footericon})
           .setTitle(`❌ ERROR | An error occurred`)
-          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
       ]});
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */

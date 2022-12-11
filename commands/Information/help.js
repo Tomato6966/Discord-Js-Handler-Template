@@ -34,7 +34,7 @@ module.exports = {
           else embed.addField("**Cooldown**", `\`${settings.default_cooldown_in_sec} Second\``);
           if (cmd.usage) {
               embed.addField("**Usage**", `\`${prefix}${cmd.usage}\``);
-              embed.setFooter("Syntax: <> = required, [] = optional");
+              embed.setFooter({ text: "Syntax: <> = required, [] = optional"});
           }
           return message.reply({embeds: [embed.setColor(ee.color)]});
         } else {
@@ -42,7 +42,7 @@ module.exports = {
               .setColor(ee.color)
               .setThumbnail(client.user.displayAvatarURL())
               .setTitle("HELP MENU 🔰 Commands")
-              .setFooter(`To see command Descriptions and Information, type: ${prefix}help [CMD NAME]`, client.user.displayAvatarURL());
+              .setFooter({ text: `To see command Descriptions and Information, type: ${prefix}help [CMD NAME]`, iconURL: client.user.displayAvatarURL()});
           const commands = (category) => {
               return client.commands.filter((cmd) => cmd.category === category).map((cmd) => `\`${cmd.name}\``);
           };
@@ -61,19 +61,11 @@ module.exports = {
         console.log(String(e.stack).bgRed)
         return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.wrongcolor)
-            .setFooter(ee.footertext, ee.footericon)
+            .setFooter({ text: ee.footertext, iconURL: ee.footericon})
             .setTitle(`❌ ERROR | An error occurred`)
-            .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+            .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
         ]});
     }
   }
 }
-/**
-  * @INFO
-  * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/Discord-Js-Handler-Template
-  * @INFO
-  * Work for Milrato Development | https://milrato.eu
-  * @INFO
-  * Please mention Him / Milrato Development, when using this Code!
-  * @INFO
-*/
+

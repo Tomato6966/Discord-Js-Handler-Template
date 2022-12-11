@@ -10,7 +10,7 @@ module.exports = {
     description: "Resends your Text", //the command description [OPTIONAL]
     memberpermissions: ["MANAGE_SERVER"], //Only allow members with specific Permissions to execute a Commmand [OPTIONAL]
     requiredroles: [], //Only allow specific Users with a Role to execute a Command [OPTIONAL]
-    alloweduserids: ["442355791412854784"], //Only allow specific Users to execute a Command [OPTIONAL]
+    alloweduserids: [], //Only allow specific Users to execute a Command [OPTIONAL]
     minargs: 1, // minimum args for the message, 0 == none [OPTIONAL]
     maxargs: 0, // maximum args for the message, 0 == none [OPTIONAL]
     minplusargs: 0, // minimum args for the message, splitted with "++" , 0 == none [OPTIONAL]
@@ -38,12 +38,3 @@ module.exports = {
     }
   }
 }
-/**
-  * @INFO
-  * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/Discord-Js-Handler-Template
-  * @INFO
-  * Work for Milrato Development | https://milrato.eu
-  * @INFO
-  * Please mention Him / Milrato Development, when using this Code!
-  * @INFO
-*/

@@ -1,7 +1,6 @@
 const {
     readdirSync
 } = require("fs");
-console.log("Welcome to SERVICE HANDLER /--/ By https://milrato.eu /--/ Discord: Tomato#6966".yellow);
 module.exports = (client) => {
     try {
         let amount = 0;
@@ -24,12 +23,3 @@ module.exports = (client) => {
         console.log(String(e.stack).bgRed)
     }
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */

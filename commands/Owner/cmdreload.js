@@ -8,7 +8,7 @@ var ee = require(`../../botconfig/embed.json`);
 module.exports = {
   name: `cmdreload`,
   category: `Owner`,
-  aliases: [`commandreload`],
+  aliases: [`commandreload`, `reload`, `cmdr`],
   description: `Reloads a command`,
   usage: `cmdreload <CMD>`,
   memberpermissions: [], //Only allow members with specific Permissions to execute a Commmand [OPTIONAL]
@@ -38,15 +38,15 @@ module.exports = {
             //send success message
             return message.reply({embeds: [new MessageEmbed()
               .setColor(ee.color)
-              .setFooter(ee.footertext, ee.footericon)
+              .setFooter({ text: ee.footertext, iconurl: ee.footericon })
               .setTitle(`Reloaded: \`${args[0]}\``)
             ]});
           } catch (e) {
             return message.reply({embeds: [new MessageEmbed()
               .setColor(ee.color)
-              .setFooter(ee.footertext, ee.footericon)
+              .setFooter({ text: ee.footertext, iconurl: ee.footericon })
               .setTitle(`:x: Could not reload: \`${args[0]}\``)
-              .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+              .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : e.stack ? String(e.stack).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
             ]});
           }
       } else {
@@ -62,17 +62,8 @@ module.exports = {
           .setColor(ee.wrongcolor)
           .setFooter(ee.footertext, ee.footericon)
           .setTitle(`❌ ERROR | An error occurred`)
-          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
       ]});
     }
   },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */

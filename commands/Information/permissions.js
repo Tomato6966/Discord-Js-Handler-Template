@@ -39,10 +39,10 @@ module.exports = {
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
-        embeduserinfo.setAuthor("Permissions from:   " + member.user.username + "#" + member.user.discriminator, member.user.displayAvatarURL({ dynamic: true }), "https://clan.milrato.eu")
+        embeduserinfo.setAuthor("Permissions from:   " + member.user.username + "#" + member.user.discriminator, member.user.displayAvatarURL({ dynamic: true }))
         embeduserinfo.addField('**❱ Permissions:**',`${message.member.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
         embeduserinfo.setColor(ee.color)
-        embeduserinfo.setFooter(ee.footertext, ee.footericon)
+        embeduserinfo.setFooter({ text: ee.footertext, iconURL: ee.footericon})
         //send the EMBED
         message.reply({embeds: [embeduserinfo]})
       }catch (e){
@@ -50,10 +50,10 @@ module.exports = {
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
-        embeduserinfo.setAuthor("Permissions from:   " + user.username + "#" + user.discriminator, user.displayAvatarURL({ dynamic: true }), "https://clan.milrato.eu")
+        embeduserinfo.setAuthor("Permissions from:   " + user.username + "#" + user.discriminator, user.displayAvatarURL({ dynamic: true }))
         embeduserinfo.addField('**❱ Permissions:**',`${message.member.permissions.toArray().map(p=>`\`${p}\``).join(", ")}`)
         embeduserinfo.setColor(ee.color)
-        embeduserinfo.setFooter(ee.footertext, ee.footericon)
+        embeduserinfo.setFooter({ text: ee.footertext, iconURL: ee.footericon})
         //send the EMBED
         message.reply({embeds: [embeduserinfo]})
       }
@@ -62,19 +62,11 @@ module.exports = {
       console.log(String(e.stack).bgRed)
       return message.reply({embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
+          .setFooter({ text: ee.footertext, iconURL: ee.footericon})
           .setTitle(`❌ ERROR | An error occurred`)
-          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
       ]});
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
+

@@ -50,23 +50,23 @@ module.exports = {
               return message.reply({embeds: [new MessageEmbed()
                 .setTitle(`Successfully, changed the Bot avatar!`)
                 .setColor(ee.color)
-                .setFooter(ee.footertext, ee.footericon)
+                .setFooter({ text: ee.footertext, iconURL: ee.footericon })
               ]});
             })
             .catch(e => {
               //send an error message
               return message.reply({embeds: [new MessageEmbed()
                 .setColor(ee.wrongcolor)
-                .setFooter(ee.footertext, ee.footericon)
+                .setFooter({ text: ee.footertext, iconURL: ee.footericon })
                 .setTitle(`:x: Something went Wrong`)
-                .setDescription(`\`\`\`${String(JSON.stringify(e)).substr(0, 2000)}\`\`\``)
+                .setDescription(`\`\`\`${String(JSON.stringify(e)).substring(0, 2000)}\`\`\``)
               ]});
             });
         } else {
           return message.reply({embeds: [new MessageEmbed()
             .setTitle(`:x: ERROR | Could not use your Image as an Avatar, make sure it is a \`png\` / \`jpg\``)
             .setColor(ee.wrongcolor)
-            .setFooter(ee.footertext, ee.footericon)
+            .setFooter({ text: ee.footertext, iconURL: ee.footericon })
           ]});
         }
       } else if (message.content && textIsImage(message.content)) {
@@ -85,15 +85,15 @@ module.exports = {
             return message.reply({embeds: [new MessageEmbed()
               .setTitle(`Successfully, changed the Bot avatar!`)
               .setColor(ee.color)
-              .setFooter(ee.footertext, ee.footericon)
+              .setFooter({ text: ee.footertext, iconURL: ee.footericon })
             ]});
           })
           .catch(e => {
             return message.reply({embeds: [new MessageEmbed()
               .setColor(ee.wrongcolor)
-              .setFooter(ee.footertext, ee.footericon)
+              .setFooter({ text: ee.footertext, iconURL: ee.footericon })
               .setTitle(`:x: Something went Wrong`)
-              .setDescription(`\`\`\`${String(JSON.stringify(e)).substr(0, 2000)}\`\`\``)
+              .setDescription(`\`\`\`${String(JSON.stringify(e)).substring(0, 2000)}\`\`\``)
             ]});
           });
 
@@ -102,7 +102,7 @@ module.exports = {
           .setTitle(`:x: ERROR | Could not use your Image as an Avatar, make sure it is a \`png\` / \`jpg\` / \`webp\``)
           .setDescription(`Useage: \`${prefix}changeavatar <AVATARLINK/IMAGE>\``)
           .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
+          .setFooter({ text: ee.footertext, iconURL: ee.footericon })
         ]});
       }
 
@@ -124,19 +124,11 @@ module.exports = {
       console.log(String(e.stack).bgRed)
       return message.reply({embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
+          .setFooter({ text: ee.footertext, iconURL: ee.footericon })
           .setTitle(`❌ ERROR | An error occurred`)
-          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
       ]});
     }
   },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
+

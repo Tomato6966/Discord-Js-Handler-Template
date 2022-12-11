@@ -24,27 +24,24 @@ module.exports = {
     try {
       message.reply({embeds: [new MessageEmbed()
         .setColor(ee.color)
-        .setFooter(ee.footertext, ee.footericon)
-        .setTitle(`:gear: **[${client.commands.size}] Commands**`)
-        .setDescription(`:gear: **[${client.categories.length}] Categories**`)
+        .setFooter({ text: ee.footertext, iconURL: ee.footericon})
+        .setTitle(`📊 Command Count`)
+        .addFields(
+        { name: `📜 Total Commands:`, value: `\`${client.commands.size}\``, inline: true},
+        { name: `📁 Total Categories:`, value: `\`${client.categories.length}\``, inline: true},
+        { name: `🔗 Total Aliases:`, value: `\`${client.aliases.size}\``, inline: true},
+        )
+        
       ]});
     } catch (e) {
       console.log(String(e.stack).bgRed)
       return message.reply({embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
+          .setFooter({ text: ee.footertext, iconURL: ee.footericon})
           .setTitle(`❌ ERROR | An error occurred`)
-          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
       ]});
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
+

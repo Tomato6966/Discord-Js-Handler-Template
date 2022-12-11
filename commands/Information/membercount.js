@@ -23,48 +23,40 @@ module.exports = {
     try {
       await message.guild.members.fetch();
         message.reply({embeds: [new Discord.MessageEmbed()
-        .setAuthor("Member-Count Information About: " +  message.guild.name, message.guild.iconURL({
-          dynamic: true
-        }), "https://clan.milrato.eu")
+        .setAuthor({ name: message.guild.name, iconURL: message.guild.iconURL({dynamic: true})})
         .setColor(ee.color)
-        .addField("❱ Total USERS", "😀 \`" + message.guild.memberCount + "\`", true)
-        .addField("❱ Total HUMANS", "👤 \`" + message.guild.members.cache.filter(member => !member.user.bot).size + "\`", true)
-        .addField("❱ Total BOTS", "🤖 \`" + message.guild.members.cache.filter(member => member.user.bot).size + "\`", true)
-        
-        .addField("❱ ONLINE", "🟢 \`" + message.guild.members.cache.filter(member => member.presence.status != "offline").size + "\`", true)
-        .addField("❱ ONLINE", "🟢 \`" + message.guild.members.cache.filter(member => !member.user.bot && member.presence.status != "offline").size + "\`", true)
-        .addField("❱ ONLINE", "🟢 \`" + message.guild.members.cache.filter(member => member.user.bot && member.presence.status != "offline").size + "\`", true)
-        
-        .addField("❱ IDLE", "🟠 \`" + message.guild.members.cache.filter(member => member.presence.status == "idle").size + "\`", true)
-        .addField("❱ IDLE", "🟠 \`" + message.guild.members.cache.filter(member => !member.user.bot && member.presence.status == "idle").size + "\`", true)
-        .addField("❱ IDLE", "🟠 \`" + message.guild.members.cache.filter(member => member.user.bot && member.presence.status == "idle").size + "\`", true)
-        
-        .addField("❱ DND", "🔴 \`" + message.guild.members.cache.filter(member => member.presence.status == "dnd").size + "\`", true)
-        .addField("❱ DND", "🔴 \`" + message.guild.members.cache.filter(member => !member.user.bot && member.presence.status == "dnd").size + "\`", true)
-        .addField("❱ DND", "🔴 \`" + message.guild.members.cache.filter(member => member.user.bot && member.presence.status == "dnd").size + "\`", true)
-        
-        .addField("❱ OFFLINE", ":black_circle:\`" + message.guild.members.cache.filter(member => member.presence.status == "offline").size + "\`", true)
-        .addField("❱ OFFLINE", ":black_circle:\`" + message.guild.members.cache.filter(member => !member.user.bot && member.presence.status == "offline").size + "\`", true)
-        .addField("❱ OFFLINE", ":black_circle:\`" + message.guild.members.cache.filter(member => member.user.bot && member.presence.status == "offline").size + "\`", true)
+        .addFields(
+        { name: "❱ Total USERS", value: "😀 \`" + message.guild.memberCount + "\`", inline: true},
+        { name: "❱ Total HUMANS", value: "👤 \`" + message.guild.members.cache.filter(member => !member.user.bot).size + "\`", inline: true},
+        { name: "❱ Total BOTS", value: "🤖 \`" + message.guild.members.cache.filter(member => member.user.bot).size + "\`", inline: true},
+
+        { name: "❱ ONLINE", value: "🟢 \`" + message.guild.members.cache.filter(member => member.presence.status != "offline").size + "\`", inline: true},
+        { name: "❱ ONLINE", value: "🟢 \`" + message.guild.members.cache.filter(member => !member.user.bot && member.presence.status != "offline").size + "\`", inline: true},
+        { name: "❱ ONLINE", value: "🟢 \`" + message.guild.members.cache.filter(member => member.user.bot && member.presence.status != "offline").size + "\`", inline: true},
+
+        { name: "❱ IDLE", value: "🟠 \`" + message.guild.members.cache.filter(member => member.presence.status == "idle").size + "\`", inline: true},
+        { name: "❱ IDLE", value: "🟠 \`" + message.guild.members.cache.filter(member => !member.user.bot && member.presence.status == "idle").size + "\`", inline: true},
+        { name: "❱ IDLE", value: "🟠 \`" + message.guild.members.cache.filter(member => member.user.bot && member.presence.status == "idle").size + "\`", inline: true},
+
+        { name: "❱ DND", value: "🔴 \`" + message.guild.members.cache.filter(member => member.presence.status == "dnd").size + "\`", inline: true},
+        { name: "❱ DND", value: "🔴 \`" + message.guild.members.cache.filter(member => !member.user.bot && member.presence.status == "dnd").size + "\`", inline: true},
+        { name: "❱ DND", value: "🔴 \`" + message.guild.members.cache.filter(member => member.user.bot && member.presence.status == "dnd").size + "\`", inline: true},
+
+        { name: "❱ OFFLINE", value: "⚫ \`" + message.guild.members.cache.filter(member => member.presence.status == "offline").size + "\`", inline: true},
+        { name: "❱ OFFLINE", value: "⚫ \`" + message.guild.members.cache.filter(member => !member.user.bot && member.presence.status == "offline").size + "\`", inline: true},
+        { name: "❱ OFFLINE", value: "⚫ \`" + message.guild.members.cache.filter(member => member.user.bot && member.presence.status == "offline").size + "\`", inline: true},
+        )
         .setTimestamp()
       ]});
     } catch (e) {
       console.log(String(e.stack).bgRed)
       return message.reply({embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
+          .setFooter({ text: ee.footertext, iconURL: ee.footericon})
           .setTitle(`❌ ERROR | An error occurred`)
           .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
       ]});
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
+

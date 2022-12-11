@@ -1,6 +1,6 @@
 {
-  "token": "DISCORD BOT TOKEN",
-  "prefix": "!",
+  "token": "MTA0NjEwODMwODMyNDQ4NzI3OQ.G5FF5S.IYslYdM304I7yp_iBmz1NWRqnRNPE2UJtfxUbw",
+  "prefix": ";",
   "loadSlashsGlobal": false, "_COMMENT_": "Set it to true, when your Slash Commands are ready, false loads instant true loads slow but stable! (GLOBAL/GUILD COMMANDS, DISCORD DOCS!)",
   "slashCommandsDirs": [
         {
@@ -13,5 +13,6 @@
                 "CmdName": "admin",
                 "CmdDescription": "Administrate the Server!"
         }
-   ]
+   ],
+   "MongooseURI": "mongodb+srv://Vancouver:Development@cluster0.qsd9mef.mongodb.net/?retryWrites=true&w=majority"
 }

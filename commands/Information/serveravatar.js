@@ -22,15 +22,29 @@ module.exports = {
   run: async (client, message, args, plusArgs, cmdUser, text, prefix) => {
     try {
       message.reply({embeds: [new Discord.MessageEmbed()
-      .setAuthor(`Avatar from: ${message.guild.name}`, message.guild.iconURL({dynamic: true}), "https://discord.gg/FQGXbypRf8")
+      .setAuthor({ name: `Avatar from: ${message.guild.name}`, iconURL: message.guild.iconURL({dynamic: true})})
       .setColor(ee.color)
-      .addField("❱ PNG",`[\`LINK\`](${message.guild.iconURL({format: "png"})})`, true)
-      .addField("❱ JPEG",`[\`LINK\`](${message.guild.iconURL({format: "jpg"})})`, true)
-      .addField("❱ WEBP",`[\`LINK\`](${message.guild.iconURL({format: "webp"})})`, true)
+      .addFields({
+        name: "❱ GIF",
+        value: `[LINK](${message.guild.iconURL({format: "gif"})})`,
+        inline: true
+      }, {
+        name: "❱ PNG",
+        value: `[LINK](${message.guild.iconURL({format: "png"})})`,
+        inline: true
+      }, {
+        name: "❱ JPEG",
+        value: `[LINK](${message.guild.iconURL({format: "jpg"})})`,
+        inline: true
+      }, {
+        name: "❱ WEBP",
+        value: `[LINK](${message.guild.iconURL({format: "webp"})})`,
+        inline: true
+      })
       .setURL(message.guild.iconURL({
         dynamic: true
       }))
-      .setFooter(ee.footertext, ee.footericon)
+      .setFooter({ text: ee.footertext, iconURL: ee.footericon})
       .setImage(message.guild.iconURL({
         dynamic: true, size: 256,
       }))
@@ -39,19 +53,11 @@ module.exports = {
       console.log(String(e.stack).bgRed)
       return message.reply({embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, ee.footericon)
+          .setFooter({ text: ee.footertext, iconURL: ee.footericon})
           .setTitle(`❌ ERROR | An error occurred`)
-          .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+          .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
       ]});
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
+

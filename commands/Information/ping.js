@@ -23,12 +23,12 @@ module.exports = {
       var date = Date.now()
       message.reply({ embeds: [new MessageEmbed()
         .setColor(ee.color)
-        .setFooter(ee.footertext, ee.footericon)
+        .setFooter({ text: ee.footertext, iconURL: ee.footericon})
         .setTitle(`🏓 Pinging....`)
       ]}).then(msg => {
         msg.edit({embeds: [new MessageEmbed()
           .setColor(ee.color)
-          .setFooter(ee.footertext, ee.footericon)
+          .setFooter({ text: ee.footertext, iconURL: ee.footericon})
           .setTitle(`🏓 Ping: \`${Math.round(Date.now() - date)}ms\`\n\n:robot: Api Latency: \`${Math.round(client.ws.ping)}ms\``)
         ]});
       })
@@ -36,19 +36,11 @@ module.exports = {
         console.log(String(e.stack).bgRed)
         return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.wrongcolor)
-            .setFooter(ee.footertext, ee.footericon)
+            .setFooter({ text: ee.footertext, iconURL: ee.footericon})
             .setTitle(`❌ ERROR | An error occurred`)
             .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
         ]});
     }
   }
 }
-/**
-  * @INFO
-  * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/Discord-Js-Handler-Template
-  * @INFO
-  * Work for Milrato Development | https://milrato.eu
-  * @INFO
-  * Please mention Him / Milrato Development, when using this Code!
-  * @INFO
-*/
+

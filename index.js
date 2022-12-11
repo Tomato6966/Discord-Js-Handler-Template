@@ -2,6 +2,9 @@ const Discord = require("discord.js");
 const config = require(`./botconfig/config.json`);
 const settings = require(`./botconfig/settings.json`);
 const colors = require("colors");
+const mongo = require("mongoose");
+const testSchema = require("./test-schema.js");
+
 const client = new Discord.Client({
     //fetchAllMembers: false,
     //restTimeOffset: 0,
@@ -31,10 +34,10 @@ const client = new Discord.Client({
     ],
     presence: {
       activity: {
-        name: `Music`, 
-        type: "LISTENING", 
+        name: `with api's`, 
+        type: "PLAYING", 
       },
-      status: "online"
+      status: "dnd"
     }
 });
 //Define some Global Collections
@@ -47,17 +50,15 @@ client.categories = require("fs").readdirSync(`./commands`);
 ["events", "commands", "slashCommands", settings.antiCrash ? "antiCrash" : null]
     .filter(Boolean)
     .forEach(h => {
-        require(`./handlers/${h}`)(client);
+        require(`./handlers/${h}`)(client);0
     })
+    // setTimeout(async () => {
+    //   await new testSchema({
+    //     id: "925875435315806258",
+    //     updates: 0,
+    //   }).save();
+    // }, 1000);
+    
+      
 //Start the Bot
 client.login(config.token)
-
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */

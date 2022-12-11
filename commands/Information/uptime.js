@@ -23,26 +23,18 @@ module.exports = {
     try{
       message.reply({embeds: [new MessageEmbed()
         .setColor(ee.color)
-        .setFooter(ee.footertext, ee.footericon)
+        .setFooter({ text: ee.footertext, iconURL: ee.footericon})
         .setTitle(`:white_check_mark: **${client.user.username}** is since:\n ${duration(client.uptime)} online`)]
       });
     } catch (e) {
         console.log(String(e.stack).bgRed)
         return message.reply({embeds: [new MessageEmbed()
             .setColor(ee.wrongcolor)
-            .setFooter(ee.footertext, ee.footericon)
+            .setFooter({ text: ee.footertext, iconURL: ee.footericon})
             .setTitle(`❌ ERROR | An error occurred`)
-            .setDescription(`\`\`\`${e.message ? String(e.message).substr(0, 2000) : String(e).substr(0, 2000)}\`\`\``)
+            .setDescription(`\`\`\`${e.message ? String(e.message).substring(0, 2000) : String(e).substring(0, 2000)}\`\`\``)
         ]});
     }
   }
 }
-/**
-  * @INFO
-  * Bot Coded by Tomato#6966 | https://github.com/Tomato6966/Discord-Js-Handler-Template
-  * @INFO
-  * Work for Milrato Development | https://milrato.eu
-  * @INFO
-  * Please mention Him / Milrato Development, when using this Code!
-  * @INFO
-*/
+

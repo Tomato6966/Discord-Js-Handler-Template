@@ -141,15 +141,6 @@ module.exports = async (client, message) => {
             }))]
         }).then(msg => {setTimeout(()=>{msg.delete().catch((e) => {console.log(String(e).grey)})}, 4000)}).catch((e) => {console.log(String(e).grey)});
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
 function escapeRegex(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
 }
